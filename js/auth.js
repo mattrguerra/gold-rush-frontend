@@ -1,4 +1,4 @@
-const API_URL = 'const API_URL = 'https://gold-rush-backend-production.up.railway.app/api';';
+const API_URL = 'https://gold-rush-backend-production.up.railway.app/api';
 
 // Check if user is authenticated
 function checkAuth() {
