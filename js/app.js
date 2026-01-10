@@ -101,10 +101,10 @@ function renderBookings(bookings) {
             </div>
             <div class="actions">
                 <select onchange="updateStatus(${booking.id}, this.value)">
-                    <option value="pending" ${booking.status === 'pending' ? 'selected' : ''}>Pending</option>
-                    <option value="confirmed" ${booking.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
-                    <option value="completed" ${booking.status === 'completed' ? 'selected' : ''}>Completed</option>
-                    <option value="cancelled" ${booking.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                    <option value="pending" ${booking.status === 'pending' ? 'selected' : ''}>${t('Pending')}</option>
+                    <option value="confirmed" ${booking.status === 'confirmed' ? 'selected' : ''}>${t('Confirmed')}</option>
+                    <option value="completed" ${booking.status === 'completed' ? 'selected' : ''}>${t('Completed')}</option>
+                    <option value="cancelled" ${booking.status === 'cancelled' ? 'selected' : ''}>${t('Cancelled')}</option>
                 </select>
             </div>
         </div>
@@ -138,6 +138,40 @@ async function updateStatus(bookingId, status) {
         loadDashboard(); // Refresh the list
     }
 }
+
+// Apply translations to static elements
+function applyTranslations() {
+    // Navbar
+    document.querySelector('.navbar h1').textContent = t('Gold Rush Detailing');
+    document.getElementById('logout-btn').textContent = t('Logout');
+    
+    // Stats
+    document.querySelectorAll('.stat-card h3')[0].textContent = t("TODAY'S BOOKINGS");
+    document.querySelectorAll('.stat-card h3')[1].textContent = t('PENDING');
+    document.querySelectorAll('.stat-card h3')[2].textContent = t('THIS WEEK');
+    
+    // Section header
+    document.querySelector('.bookings-section h2').textContent = t('Upcoming Bookings');
+    
+    // Filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        const filter = btn.dataset.filter;
+        const labels = { all: 'All', pending: 'Pending', confirmed: 'Confirmed', completed: 'Completed', cancelled: 'Cancelled' };
+        btn.textContent = t(labels[filter]);
+    });
+    
+    // Show past toggle
+    document.querySelector('.toggle-label').lastChild.textContent = ' ' + t('Show past');
+    
+    // Set lang toggle state
+    const langToggle = document.getElementById('lang-toggle');
+    if (langToggle) {
+        langToggle.checked = currentLang === 'en';
+    }
+}
+
+// Call on page load
+applyTranslations();
 
 // Load dashboard on page load
 loadDashboard();
