@@ -24,6 +24,14 @@
         </form>
     </div>
     <script src="js/translations.js"></script>
+    <script>
+        // Apply translations to login page
+        document.querySelector('h1').textContent = t('Gold Rush Detailing');
+        document.querySelector('h2').textContent = t('Admin Login');
+        document.querySelector('label[for="username"]').textContent = t('Username');
+        document.querySelector('label[for="password"]').textContent = t('Password');
+        document.querySelector('button[type="submit"]').textContent = t('Login');
+    </script>
     <script src="js/auth.js"></script>
 </body>
 </html>
