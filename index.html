@@ -3,16 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold Rush Detailing - Admin</title>
+    <title>Gold Rush Detailing - Mobile Car Detailing</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/booking.css">
 </head>
 <body>
-    <script>
-        const token = localStorage.getItem('token');
-        if (token) {
-            window.location.href = 'dashboard.html';
-        } else {
-            window.location.href = 'login.html';
-        }
-    </script>
-</body>    
+    <nav class="public-nav">
+        <h1>Gold Rush Detailing</h1>
+        <a href="tel:+18325551234" class="phone-link">📞 (832) 555-1234</a>
+    </nav>
+
+    <main class="booking-page">
+        <section class="hero">
+            <h2>Mobile Car Detailing</h2>
+            <p>Professional detailing that comes to you in Richmond & Katy, TX</p>
+        </section>
+
+        <section class="booking-container">
+            <div class="booking-steps">
+                <div class="step active" data-step="1">1. Service</div>
+                <div class="step" data-step="2">2. Date & Time</div>
+                <div class="step" data-step="3">3. Your Info</div>
+                <div class="step" data-step="4">4. Confirm</div>
+            </div>
+
+            <!-- Step 1: Select Service -->
+            <div class="booking-step" id="step-1">
+                <h3>Select a Service</h3>
+                <div id="services-list" class="services-grid">
+                    <!-- Services loaded dynamically -->
+                </div>
+            </div>
+
+            <!-- Step 2: Select Date & Time -->
+            <div class="booking-step hidden" id="step-2">
+                <h3>Choose Date & Time</h3>
+                <div class="datetime-picker">
+                    <div class="date-section">
+                        <label>Select Date</label>
+                        <input type="date" id="booking-date" min="">
+                    </div>
+                    <div class="time-section">
+                        <label>Available Times</label>
+                        <div id="time-slots" class="time-slots">
+                            <p style="color: #888;">Select a date first</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-buttons">
+                    <button type="button" class="btn-back" onclick="goToStep(1)">Back</button>
+                    <button type="button" class="btn-next" onclick="goToStep(3)" id="btn-to-step-3" disabled>Next</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Customer Info -->
+            <div class="booking-step hidden" id="step-3">
+                <h3>Your Information</h3>
+                <form id="customer-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customer-name">Full Name</label>
+                            <input type="text" id="customer-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-email">Email</label>
+                            <input type="email" id="customer-email" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customer-phone">Phone</label>
+                            <input type="tel" id="customer-phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicle-type">Vehicle Type</label>
+                            <select id="vehicle-type" required>
+                                <option value="">Select...</option>
+                                <option value="sedan">Sedan</option>
+                                <option value="suv">SUV</option>
+                                <option value="truck">Truck</option>
+                                <option value="van">Van</option>
+                                <option value="coupe">Coupe</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-address">Service Address</label>
+                        <input type="text" id="customer-address" placeholder="Where should we come?" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="booking-notes">Notes (optional)</label>
+                        <textarea id="booking-notes" rows="3" placeholder="Any special requests?"></textarea>
+                    </div>
+                </form>
+                <div class="step-buttons">
+                    <button type="button" class="btn-back" onclick="goToStep(2)">Back</button>
+                    <button type="button" class="btn-next" onclick="goToStep(4)">Review Booking</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Confirmation -->
+            <div class="booking-step hidden" id="step-4">
+                <h3>Confirm Your Booking</h3>
+                <div class="booking-summary">
+                    <div class="summary-row">
+                        <span>Service:</span>
+                        <span id="summary-service"></span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Date:</span>
+                        <span id="summary-date"></span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Time:</span>
+                        <span id="summary-time"></span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Vehicle:</span>
+                        <span id="summary-vehicle"></span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Location:</span>
+                        <span id="summary-address"></span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total:</span>
+                        <span id="summary-price"></span>
+                    </div>
+                </div>
+                <div class="step-buttons">
+                    <button type="button" class="btn-back" onclick="goToStep(3)">Back</button>
+                    <button type="button" class="btn-confirm" onclick="submitBooking()">Confirm Booking</button>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            <div class="booking-step hidden" id="step-success">
+                <div class="success-message">
+                    <div class="success-icon">✓</div>
+                    <h3>Booking Confirmed!</h3>
+                    <p>We've sent a confirmation email to <span id="confirm-email"></span></p>
+                    <p>We'll see you on <span id="confirm-date"></span> at <span id="confirm-time"></span></p>
+                    <button onclick="location.reload()">Book Another Service</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="public-footer">
+        <p>Gold Rush Detailing • Richmond & Katy, TX</p>
+        <p>© 2025 All Rights Reserved</p>
+    </footer>
+
+    <script src="js/booking.js"></script>
+</body>
 </html>
