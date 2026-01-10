@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Gold Rush Detailing</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Gold Rush Detailing</h1>
+        <button id="logout-btn">Logout</button>
+    </nav>
+
+    <main class="dashboard">
+        <section class="stats">
+            <div class="stat-card">
+                <h3>Today's Bookings</h3>
+                <p id="today-count">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Pending</h3>
+                <p id="pending-count">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>This Week</h3>
+                <p id="week-count">0</p>
+            </div>
+        </section>
+
+        <section class="bookings-section">
+            <div class="section-header">
+                <h2>Upcoming Bookings</h2>
+                <div class="filters">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="pending">Pending</button>
+                    <button class="filter-btn" data-filter="confirmed">Confirmed</button>
+                    <button class="filter-btn" data-filter="completed">Completed</button>
+                    <button class="filter-btn" data-filter="cancelled">Cancelled</button>
+                    <label class="toggle-label">
+                        <input type="checkbox" id="show-past-toggle">
+                        Show past
+                        </label>
+                </div>
+            </div>
+            <div id="bookings-list" class="bookings-list">
+                <!-- Bookings loaded here -->
+            </div>
+        </section>
+    </main>
+
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
