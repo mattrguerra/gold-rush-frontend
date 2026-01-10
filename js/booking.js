@@ -174,18 +174,17 @@ async function submitBooking() {
     btn.disabled = true;
     btn.textContent = 'Submitting...';
     
-    const bookingData = {
-        service_id: selectedService.id,
-        scheduled_date: selectedDate,
-        scheduled_time: selectedTime,
-        customer_name: document.getElementById('customer-name').value,
-        email: document.getElementById('customer-email').value,
-        phone: document.getElementById('customer-phone').value,
-        vehicle_type: document.getElementById('vehicle-type').value,
-        address: document.getElementById('customer-address').value,
-        notes: document.getElementById('booking-notes').value,
-        total_price: selectedService.price
-    };
+const bookingData = {
+    service_id: selectedService.id,
+    scheduled_date: selectedDate,
+    scheduled_time: selectedTime,
+    name: document.getElementById('customer-name').value,
+    email: document.getElementById('customer-email').value,
+    phone: document.getElementById('customer-phone').value,
+    vehicle_type: document.getElementById('vehicle-type').value,
+    address: document.getElementById('customer-address').value,
+    notes: document.getElementById('booking-notes').value
+};
     
     try {
         const response = await fetch(`${API_URL}/bookings`, {
