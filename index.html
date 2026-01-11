@@ -3,158 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold Rush Detailing - Mobile Car Detailing</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/booking.css">
+    <title>Gold Rush Detailing | Mobile Car Detailing in Richmond & Katy, TX</title>
+    <meta name="description" content="Professional mobile car detailing in Richmond, Katy, and Houston TX. We come to you! Interior detailing, exterior wash, ceramic coating & more. Book online today.">
+    <meta name="keywords" content="mobile car detailing, car wash Richmond TX, auto detailing Katy TX, interior detailing Houston, ceramic coating, mobile detailing near me"
+    <link rel="stylesheet" href="css/home.css">
 </head>
 <body>
     <nav class="public-nav">
-        <h1>Gold Rush Detailing</h1>
-        <a href="tel:+18325551234" class="phone-link">📞 (832) 555-1234</a>
+        <a href="index.html" class="logo">Gold Rush Detailing</a>
+        <ul class="nav-links">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="services.html" class="active">Services</a></li>
+            <li><a href="gallery.html" class="active">Gallery</a></li>
+            <li><a href="about.html" class="active">About</a></li>
+            <li><a href="contact.html" class="active">Contact</a></li>
+        </ul>
+        <a href="booking.html" class="nav-cta">Book Now</a>
+        <button class="mobile-menu-btn" aria-label="Menu">&#9776;</button>
     </nav>
 
-    <main class="booking-page">
-        <section class="hero">
-            <h2>Mobile Car Detailing</h2>
-            <p>Professional detailing that comes to you in Richmond & Katy, TX</p>
-        </section>
-
-        <section class="booking-container">
-            <div class="booking-steps">
-                <div class="step active" data-step="1">1. Service</div>
-                <div class="step" data-step="2">2. Date & Time</div>
-                <div class="step" data-step="3">3. Your Info</div>
-                <div class="step" data-step="4">4. Confirm</div>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Transforming Cars<br><span>Into Show-Stopping Rides</span></h1>
+            <p>At Gold Rush Detailing, we specialize in premium mobile detailing services that restore and enhance your vehicle's beauty. Whether it's a quick wash or full detail, we come to you.</p>
+            <div class="hero-cta">
+                <a href="booking.html" class="btn btn-primary">Book Now</a>
+                <a href="tel:+18323302403" class="btn btn-secondary">Call (832) 330-2403</a>
             </div>
+        </div>
+    </section>
 
-            <!-- Step 1: Select Service -->
-            <div class="booking-step" id="step-1">
-                <h3>Select a Service</h3>
-                <div id="services-list" class="services-grid">
-                    <!-- Services loaded dynamically -->
-                </div>
-            </div>
+    <div class="marquee">
+        <div class="marquee-content">
+            <span>Premium Mobile Detailing</span>
+            <span>Spotless Interiors, Gleaming Exteriors</span>
+            <span>Shine Like Never Before</span>
+            <span>We Come To You</span>
+            <span>Premium Mobile Detailing</span>
+            <span>Spotless Interiors, Gleaming Exteriors</span>
+            <span>Shine Like Never Before</span>
+            <span>We Come To You</span>
+        </div>
+    </div>
 
-            <!-- Step 2: Select Date & Time -->
-            <div class="booking-step hidden" id="step-2">
-                <h3>Choose Date & Time</h3>
-                <div class="datetime-picker">
-                    <div class="date-section">
-                        <label>Select Date</label>
-                        <input type="date" id="booking-date" min="">
-                    </div>
-                    <div class="time-section">
-                        <label>Available Times</label>
-                        <div id="time-slots" class="time-slots">
-                            <p style="color: #888;">Select a date first</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="step-buttons">
-                    <button type="button" class="btn-back" onclick="goToStep(1)">Back</button>
-                    <button type="button" class="btn-next" onclick="goToStep(3)" id="btn-to-step-3" disabled>Next</button>
-                </div>
-            </div>
+    <section class="about-section container">
+        <div class="about-content">
+            <h2>Hi, We Are Gold Rush Detailing</h2>
+            <h3>Your Trusted Partner in Car Care Excellence</h3>
+            <p>At Gold Rush Detailing, we are dedicated to enhancing and protecting your vehicle with expert detailing services. From deep cleaing to ceramic coatings, we combine precision, quality, and convenience to keep your car looking brand new.</p>
+            <p>We bring everything to you—at home, at work, or wherever is convenient. No more waiting at shops or adjusting your schedule.</p>
+            <a href="about.html" class="btn btn-primary">About Us</a>
+        </div>
+        <div class="about-image">
+            <img src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=800" alt="Car being detailed">
+        </div>
+    </section>
 
-            <!-- Step 3: Customer Info -->
-            <div class="booking-step hidden" id="step-3">
-                <h3>Your Information</h3>
-                <form id="customer-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="customer-name">Full Name</label>
-                            <input type="text" id="customer-name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="customer-email">Email</label>
-                            <input type="email" id="customer-email" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="customer-phone">Phone</label>
-                            <input type="tel" id="customer-phone" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="vehicle-type">Vehicle Type</label>
-                            <select id="vehicle-type" required>
-                                <option value="">Select...</option>
-                                <option value="sedan">Sedan</option>
-                                <option value="suv">SUV</option>
-                                <option value="truck">Truck</option>
-                                <option value="van">Van</option>
-                                <option value="coupe">Coupe</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="customer-address">Service Address</label>
-                        <input type="text" id="customer-address" placeholder="Where should we come?" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="booking-notes">Notes (optional)</label>
-                        <textarea id="booking-notes" rows="3" placeholder="Any special requests?"></textarea>
-                    </div>
-                </form>
-                <div class="step-buttons">
-                    <button type="button" class="btn-back" onclick="goToStep(2)">Back</button>
-                    <button type="button" class="btn-next" onclick="goToStep(4)">Review Booking</button>
+    <section class="stats-section">
+        <div class="container">
+            <h2>Why <em>Choose Us?</em></h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="number">5+</div>
+                    <div class="label">Years of Expertise</div>
+                    <p>With years of experience in car detailing and protection, we know what it takes to keep your vehicle looking its best.</p>
+                </div>
+                <div class="stat-item">
+                    <div class="number">500+</div>
+                    <div class="label">Cars Serviced</div>
+                    <p>From daily drivers to luxury rides, we've restored and enhanced hundreds of vehicles with precision and care.</p>
+                </div>
+                <div class="stat-item">
+                    <div class="number">100%</div>
+                    <div class="label">Satisfaction</div>
+                    <p>Our clients trust us for our attention to detail, high-quality products, and exceptional mobile service.</p>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <!-- Step 4: Confirmation -->
-            <div class="booking-step hidden" id="step-4">
-                <h3>Confirm Your Booking</h3>
-                <div class="booking-summary">
-                    <div class="summary-row">
-                        <span>Service:</span>
-                        <span id="summary-service"></span>
-                    </div>
-                    <div class="summary-row">
-                        <span>Date:</span>
-                        <span id="summary-date"></span>
-                    </div>
-                    <div class="summary-row">
-                        <span>Time:</span>
-                        <span id="summary-time"></span>
-                    </div>
-                    <div class="summary-row">
-                        <span>Vehicle:</span>
-                        <span id="summary-vehicle"></span>
-                    </div>
-                    <div class="summary-row">
-                        <span>Location:</span>
-                        <span id="summary-address"></span>
-                    </div>
-                    <div class="summary-row total">
-                        <span>Total:</span>
-                        <span id="summary-price"></span>
+    <section class="feature-cards container">
+        <div class="feature-card" style="background-image: url('https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=800');">
+            <h3>Services</h3>
+            <p>We offer a complete range of car care services designed to keep your vehicle in top condition. From professional washes to ceramic coatings, we've got you covered.</p>
+            <a href="services.html" class="btn btn-primary">Learn More</a>
+        </div>
+        <div class="feature-card" style="background-image: url('https://images.unsplash.com/photo-1619725002198-6a689b72f41d?w=800');">
+            <h3>Our Work</h3>
+            <p>See how we've transformed vehicles with our expert detailing services. From restoring showroom shine to long-lasting coatings, our results speak for themselves.</p>
+            <a href="gallery.html" class="btn btn-primary">Learn More</a>
+        </div>
+    </section>
+
+    <section class="services-preview">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Services</h2>
+                <p>From a quick refresh to a complete transformation</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <img src="https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?w=600" alt="Exterior wash">
+                    <div class="service-card-content">
+                        <h3>Premium Wash</h3>
+                        <p>A deep clean that removes dirt, grime, and contaminants, leaving your vehicle spotless and refreshed.</p>
                     </div>
                 </div>
-                <div class="step-buttons">
-                    <button type="button" class="btn-back" onclick="goToStep(3)">Back</button>
-                    <button type="button" class="btn-confirm" onclick="submitBooking()">Confirm Booking</button>
+                <div class="service-card">
+                    <img src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=600" alt="Interior detailing">
+                    <div class="service-card-content">
+                        <h3>Interior Detail</h3>
+                        <p>Complete interior restoration including deep cleaning, conditioning, and protection of all surfaces.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <img src="https://images.unsplash.com/photo-1619725002198-6a689b72f41d?w=600" alt="Ceramic coating">
+                    <div class="service-card-content">
+                        <h3>Ceramic Coating</h3>
+                        <p>Advanced coating technology that provides long-lasting protection, water resistance, and a high-gloss finish.</p>
+                    </div>
                 </div>
             </div>
+            <a href="services.html" class="btn btn-outline">View All Services</a>
+        </div>
+    </section>
 
-            <!-- Success Message -->
-            <div class="booking-step hidden" id="step-success">
-                <div class="success-message">
-                    <div class="success-icon">✓</div>
-                    <h3>Booking Confirmed!</h3>
-                    <p>We've sent a confirmation email to <span id="confirm-email"></span></p>
-                    <p>We'll see you on <span id="confirm-date"></span> at <span id="confirm-time"></span></p>
-                    <button onclick="location.reload()">Book Another Service</button>
-                </div>
+    <section class="service-area">
+        <div class="container">
+            <h2>Service Areas</h2>
+            <p>Proudly serving Richmond, Rosenberg, Katy, Sugar Land, Missouri City, and surrounding Houston communities.</p>
+            <div class="areas-list">
+                <span>Richmond</span>
+                <span>Katy</span>
+                <span>Rosenberg</span>
+                <span>Sugar Land</span>
+                <span>Missouri City</span>
+                <span>Fulshear</span>
+                <span>Pecan Grove</span>
+                <span>Cinco Ranch</span>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready for a Showroom Shine?</h2>
+            <p>Book your mobile detail today and experience the Gold Rush difference.</p>
+            <a href="booking.html" class="btn btn-primary btn-large">Book Your Detail</a>
+        </div>
+    </section>
+    
     <footer class="public-footer">
-        <p>Gold Rush Detailing • Richmond & Katy, TX</p>
-        <p>© 2025 All Rights Reserved</p>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Gold Rush Detailing</h4>
+                    <p>Premium mobile car detailing services in Richmond, Katy & Greater Houston. We bring the shine to you.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="booking.html">Book Online</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <p><a href="tel:+18325551234">(832) 555-1234</a></p>
+                    <p><a href="mailto:info@goldrushdetailing.com">info@goldrushdetailing.com</a></p>
+                    <p style="margin-top: 15px;">Richmond & Katy, TX</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Gold Rush Detailing. All Rights Reserved.</p>
+                <p>Mobile Detailing in Richmond & Katy, TX</p>
+            </div>
+        </div>
     </footer>
 
-    <script src="js/booking.js"></script>
+    <script>
+        // Nav scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('.public-nav');
+            if (window.scrollY > 100) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', () => {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+    </script>
 </body>
 </html>
