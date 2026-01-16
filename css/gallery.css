@@ -1,0 +1,220 @@
+/* Gallery Page Hero */
+.page-hero-gallery {
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)),
+                url('https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=1920') center/cover no-repeat;
+}
+
+/* Gallery Intro */
+.gallery-intro {
+    padding: 100px 0;
+    text-align: center;
+    background: var(--dark);
+}
+
+.gallery-intro .intro-content h2 {
+    font-size: 42px;
+    margin-bottom: 20px;
+}
+
+.gallery-intro .intro-content h2 em {
+    font-style: italic;
+    color: var(--text-light);
+}
+
+.gallery-intro .intro-content p {
+    font-size: 16px;
+    line-height: 1.9;
+    color: var(--text-light);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Filter Buttons */
+.gallery-filters {
+    padding: 0 0 60px;
+    background: var(--dark);
+}
+
+.filter-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.filter-btn {
+    background: transparent;
+    border: 1px solid #333;
+    color: var(--text-light);
+    padding: 14px 28px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+    border-color: var(--gold);
+    color: #fff;
+}
+
+.filter-btn.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--dark);
+}
+
+/* Gallery Grid */
+.gallery-grid-section {
+    padding: 0 0 100px;
+    background: var(--dark);
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.gallery-item {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.gallery-image {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.gallery-image img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.gallery-image:hover img {
+    transform: scale(1.1);
+}
+
+.gallery-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 30px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.9));
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s ease;
+}
+
+.gallery-image:hover .gallery-overlay {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.gallery-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+}
+
+.gallery-overlay h3 {
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.gallery-overlay p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+}
+
+/* Gallery CTA Box */
+.gallery-cta {
+    padding: 0 0 100px;
+    background: var(--dark);
+}
+
+.cta-box {
+    background: var(--dark-lighter);
+    border: 1px solid #222;
+    padding: 80px 60px;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.cta-box h2 {
+    font-size: 36px;
+    margin-bottom: 15px;
+}
+
+.cta-box p {
+    font-size: 16px;
+    color: var(--text-light);
+    margin-bottom: 35px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .gallery-image img {
+        height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .gallery-intro {
+        padding: 60px 0;
+    }
+    
+    .gallery-intro .intro-content h2 {
+        font-size: 32px;
+    }
+    
+    .gallery-filters {
+        padding: 0 0 40px;
+    }
+    
+    .filter-buttons {
+        gap: 10px;
+    }
+    
+    .filter-btn {
+        padding: 12px 20px;
+        font-size: 11px;
+    }
+    
+    .gallery-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .gallery-image img {
+        height: 280px;
+    }
+    
+    .gallery-overlay {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .cta-box {
+        padding: 50px 30px;
+    }
+    
+    .cta-box h2 {
+        font-size: 28px;
+    }
+}
