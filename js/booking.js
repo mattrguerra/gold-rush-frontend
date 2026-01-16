@@ -107,8 +107,8 @@ async function loadTimeSlots(date) {
         container.innerHTML = slots.map(slot => {
             const isBooked = booked.includes(slot);
             return `
-                <div class="time-slot ${isBooked ? 'unavailable' : ''}" 
-                     onclick="${isBooked ? '' : `selectTime('${slot}')`}">
+                <div class="time-slot ${isBooked ? 'booked' : ''}" 
+                    onclick="${isBooked ? '' : `selectTime('${slot}')`}">
                     ${formatTime(slot)}
                 </div>
             `;
