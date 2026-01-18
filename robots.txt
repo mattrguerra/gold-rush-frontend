@@ -7,6 +7,7 @@ Allow /
 Disallow: /admin.html
 Disallow: /login.html
 Disallow: /dashboard.html
+Disallow /gallery.html
 Disallow: /api/
 
 # Block utility files

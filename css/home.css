@@ -1,3 +1,4 @@
+/**
 /* Typography */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600&display=swap');
 
@@ -419,10 +420,11 @@ h1, h2, h3, h4 {
     margin: 0 auto;
 }
 
-/* Feature Cards */
+/**
+* Feature Cards *
 .feature-cards {
     padding: 140px 0;
-    display: flex;
+    display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 30px;
 }
@@ -430,7 +432,6 @@ h1, h2, h3, h4 {
 .feature-card {
     position: relative;
     height: 500px;
-    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -466,7 +467,7 @@ h1, h2, h3, h4 {
     max-width: 400px;
     margin-bottom: 40px;
 }
-
+**/
 /* Service Areas */
 .service-area {
     padding: 120px 0;
