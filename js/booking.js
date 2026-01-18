@@ -2,11 +2,15 @@ const API_URL = 'https://gold-rush-backend-production.up.railway.app/api';
 
 // Booking state
 let selectedService = null;
+let selectedAddons = [];
 let selectedDate = null;
 let selectedTime = null;
 
-// Load services on page load
-document.addEventListener('DOMContentLoaded', loadServices);
+// Load services and addons on page load
+document.addEventListener('DOMContentLoaded', () => {
+    loadServices();
+    loadAddons();
+});
 
 async function loadServices() {
     try {
@@ -14,17 +18,57 @@ async function loadServices() {
         const data = await response.json();
         
         const container = document.getElementById('services-list');
-        container.innerHTML = data.services.map(service => `
-            <div class="service-card" onclick="selectService(${service.id}, '${service.name}', ${service.base_price}, ${service.duration_minutes})">
-                <h4>${service.name}</h4>
-                <p>${service.description || ''}</p>
-                <div class="price">$${service.base_price}</div>
-                <div class="duration">${service.duration_minutes} minutes</div>
-            </div>
-        `).join('');
+        container.innerHTML = data.services.map(service => {
+            // Parse features from newline-separated string
+            const features = service.features ? service.features.split('\n').filter(f => f.trim()) : [];
+            const featuresHTML = features.length > 0 
+                ? `<ul class="service-features-list">
+                    ${features.map(f => `<li>${f}</li>`).join('')}
+                   </ul>`
+                : `<p class="service-desc">${service.description || ''}</p>`;
+            
+            return `
+                <div class="service-card" onclick="selectService(${service.id}, '${service.name.replace(/'/g, "\\'")}', ${service.base_price}, ${service.duration_minutes})">
+                    <h4>${service.name}</h4>
+                    <div class="price">$${service.base_price}</div>
+                    <div class="duration">${service.duration_minutes} minutes</div>
+                    ${featuresHTML}
+                </div>
+            `;
+        }).join('');
     } catch (err) {
         console.error('Failed to load services:', err);
         document.getElementById('services-list').innerHTML = '<p style="color: #ef4444;">Failed to load services. Please refresh.</p>';
+    }
+}
+
+async function loadAddons() {
+    try {
+        const response = await fetch(`${API_URL}/addons`);
+        const data = await response.json();
+        
+        const container = document.getElementById('addons-list');
+        
+        if (!data.addons || data.addons.length === 0) {
+            container.innerHTML = '<p style="color: #888;">No add-ons available</p>';
+            return;
+        }
+        
+        container.innerHTML = data.addons.map(addon => `
+            <div class="addon-card" data-id="${addon.id}" data-name="${addon.name}" data-price="${addon.price}" onclick="toggleAddon(this)">
+                <div class="addon-checkbox">
+                    <span class="checkmark">✓</span>
+                </div>
+                <div class="addon-info">
+                    <h4>${addon.name}</h4>
+                    <p>${addon.description || ''}</p>
+                </div>
+                <div class="addon-price">+$${addon.price}</div>
+            </div>
+        `).join('');
+    } catch (err) {
+        console.error('Failed to load addons:', err);
+        document.getElementById('addons-list').innerHTML = '<p style="color: #888;">Add-ons unavailable</p>';
     }
 }
 
@@ -35,28 +79,49 @@ function selectService(id, name, price, duration) {
     document.querySelectorAll('.service-card').forEach(card => card.classList.remove('selected'));
     event.currentTarget.classList.add('selected');
     
-    // Set min date to today
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('booking-date').min = today;
-    document.getElementById('booking-date').value = '';
-    
-    // Reset time selection
-    selectedTime = null;
-    document.getElementById('time-slots').innerHTML = '<p style="color: #888;">Select a date first</p>';
-    document.getElementById('btn-to-step-3').disabled = true;
-    
-    // Go to next step after short delay
+    // Go to add-ons step after short delay
     setTimeout(() => goToStep(2), 300);
+}
+
+function toggleAddon(element) {
+    element.classList.toggle('selected');
+    
+    const id = parseInt(element.dataset.id);
+    const name = element.dataset.name;
+    const price = parseFloat(element.dataset.price);
+    
+    if (element.classList.contains('selected')) {
+        selectedAddons.push({ id, name, price });
+    } else {
+        selectedAddons = selectedAddons.filter(a => a.id !== id);
+    }
 }
 
 function goToStep(step) {
     // Validate before moving forward
-    if (step === 3 && (!selectedDate || !selectedTime)) {
+    if (step === 2 && !selectedService) {
+        alert('Please select a service');
+        return;
+    }
+    
+    if (step === 3) {
+        // Set min date to today when entering date step
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('booking-date').min = today;
+        document.getElementById('booking-date').value = '';
+        
+        // Reset time selection
+        selectedTime = null;
+        document.getElementById('time-slots').innerHTML = '<p class="time-placeholder">Select a date first</p>';
+        document.getElementById('btn-to-step-4').disabled = true;
+    }
+    
+    if (step === 4 && (!selectedDate || !selectedTime)) {
         alert('Please select a date and time');
         return;
     }
     
-    if (step === 4) {
+    if (step === 5) {
         if (!validateCustomerForm()) return;
         updateSummary();
     }
@@ -83,7 +148,7 @@ function goToStep(step) {
 document.getElementById('booking-date').addEventListener('change', async (e) => {
     selectedDate = e.target.value;
     selectedTime = null;
-    document.getElementById('btn-to-step-3').disabled = true;
+    document.getElementById('btn-to-step-4').disabled = true;
     
     await loadTimeSlots(selectedDate);
 });
@@ -124,7 +189,7 @@ function selectTime(time) {
     document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
     event.currentTarget.classList.add('selected');
     
-    document.getElementById('btn-to-step-3').disabled = false;
+    document.getElementById('btn-to-step-4').disabled = false;
 }
 
 function formatTime(timeString) {
@@ -160,13 +225,33 @@ function validateCustomerForm() {
     return true;
 }
 
+function calculateTotal() {
+    let total = selectedService.price;
+    selectedAddons.forEach(addon => {
+        total += addon.price;
+    });
+    return total;
+}
+
 function updateSummary() {
     document.getElementById('summary-service').textContent = selectedService.name;
     document.getElementById('summary-date').textContent = formatDate(selectedDate);
     document.getElementById('summary-time').textContent = formatTime(selectedTime);
     document.getElementById('summary-vehicle').textContent = document.getElementById('vehicle-type').value;
     document.getElementById('summary-address').textContent = document.getElementById('customer-address').value;
-    document.getElementById('summary-price').textContent = `$${selectedService.price}`;
+    
+    // Handle add-ons display
+    const addonsRow = document.getElementById('summary-addons-row');
+    if (selectedAddons.length > 0) {
+        addonsRow.style.display = 'flex';
+        document.getElementById('summary-addons').textContent = selectedAddons.map(a => a.name).join(', ');
+    } else {
+        addonsRow.style.display = 'none';
+    }
+    
+    // Calculate and display total
+    const total = calculateTotal();
+    document.getElementById('summary-price').textContent = `$${total}`;
 }
 
 async function submitBooking() {
@@ -174,17 +259,19 @@ async function submitBooking() {
     btn.disabled = true;
     btn.textContent = 'Submitting...';
     
-const bookingData = {
-    service_id: selectedService.id,
-    scheduled_date: selectedDate,
-    scheduled_time: selectedTime,
-    name: document.getElementById('customer-name').value,
-    email: document.getElementById('customer-email').value,
-    phone: document.getElementById('customer-phone').value,
-    vehicle_type: document.getElementById('vehicle-type').value,
-    address: document.getElementById('customer-address').value,
-    notes: document.getElementById('booking-notes').value
-};
+    const bookingData = {
+        service_id: selectedService.id,
+        addon_ids: selectedAddons.map(a => a.id),
+        scheduled_date: selectedDate,
+        scheduled_time: selectedTime,
+        name: document.getElementById('customer-name').value,
+        email: document.getElementById('customer-email').value,
+        phone: document.getElementById('customer-phone').value,
+        vehicle_type: document.getElementById('vehicle-type').value,
+        address: document.getElementById('customer-address').value,
+        notes: document.getElementById('booking-notes').value,
+        total_price: calculateTotal()
+    };
     
     try {
         const response = await fetch(`${API_URL}/bookings`, {

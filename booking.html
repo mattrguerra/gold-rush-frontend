@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     
-    <title>Book Mobile Car Detailing Online | Gold Rush detailing</title>
+    <title>Book Mobile Car Detailing Online | Gold Rush Detailing</title>
     <meta name="description" content="Book your mobile car detailing appointment online. Select service, date & time. Professional detailing in Richmond, Katy & Fort Bend County TX.">
     <meta name="keywords" content="booking Gold Rush Detailing, book car detailing services, mobile car detailing, car detailing, auto detailing, car detailing near me, Richmond TX, Katy TX, Fort Bend County, interior detailing, exterior detailing, mobile car wash, auto detailing services, car detailing interior">
 
@@ -58,14 +58,18 @@
                     </div>
                     <div class="step" data-step="2">
                         <span class="step-number">2</span>
-                        <span class="step-label">Date & Time</span>
+                        <span class="step-label">Add-Ons</span>
                     </div>
                     <div class="step" data-step="3">
                         <span class="step-number">3</span>
-                        <span class="step-label">Your Info</span>
+                        <span class="step-label">Date & Time</span>
                     </div>
                     <div class="step" data-step="4">
                         <span class="step-number">4</span>
+                        <span class="step-label">Your Info</span>
+                    </div>
+                    <div class="step" data-step="5">
+                        <span class="step-number">5</span>
                         <span class="step-label">Confirm</span>
                     </div>
                 </div>
@@ -79,8 +83,21 @@
                     </div>
                 </div>
 
-                <!-- Step 2: Select Date & Time -->
+                <!-- Step 2: Add-Ons -->
                 <div class="booking-step hidden" id="step-2">
+                    <h3>Enhance Your Detail</h3>
+                    <p class="step-description">Add extra services to your package (optional)</p>
+                    <div id="addons-list" class="addons-grid">
+                        <!-- Add-ons loaded dynamically -->
+                    </div>
+                    <div class="step-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="goToStep(1)">Back</button>
+                        <button type="button" class="btn btn-primary" onclick="goToStep(3)">Continue</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Select Date & Time -->
+                <div class="booking-step hidden" id="step-3">
                     <h3>Choose Date & Time</h3>
                     <p class="step-description">Select your preferred appointment date and time</p>
                     <div class="datetime-picker">
@@ -96,13 +113,13 @@
                         </div>
                     </div>
                     <div class="step-buttons">
-                        <button type="button" class="btn btn-secondary" onclick="goToStep(1)">Back</button>
-                        <button type="button" class="btn btn-primary" onclick="goToStep(3)" id="btn-to-step-3" disabled>Continue</button>
+                        <button type="button" class="btn btn-secondary" onclick="goToStep(2)">Back</button>
+                        <button type="button" class="btn btn-primary" onclick="goToStep(4)" id="btn-to-step-4" disabled>Continue</button>
                     </div>
                 </div>
 
-                <!-- Step 3: Customer Info -->
-                <div class="booking-step hidden" id="step-3">
+                <!-- Step 4: Customer Info -->
+                <div class="booking-step hidden" id="step-4">
                     <h3>Your Information</h3>
                     <p class="step-description">Tell us a bit about you and your vehicle</p>
                     <form id="customer-form">
@@ -143,19 +160,23 @@
                         </div>
                     </form>
                     <div class="step-buttons">
-                        <button type="button" class="btn btn-secondary" onclick="goToStep(2)">Back</button>
-                        <button type="button" class="btn btn-primary" onclick="goToStep(4)">Review Booking</button>
+                        <button type="button" class="btn btn-secondary" onclick="goToStep(3)">Back</button>
+                        <button type="button" class="btn btn-primary" onclick="goToStep(5)">Review Booking</button>
                     </div>
                 </div>
 
-                <!-- Step 4: Confirmation -->
-                <div class="booking-step hidden" id="step-4">
+                <!-- Step 5: Confirmation -->
+                <div class="booking-step hidden" id="step-5">
                     <h3>Confirm Your Booking</h3>
                     <p class="step-description">Review your details and confirm</p>
                     <div class="booking-summary">
                         <div class="summary-row">
                             <span class="summary-label">Service</span>
                             <span class="summary-value" id="summary-service"></span>
+                        </div>
+                        <div class="summary-row" id="summary-addons-row" style="display: none;">
+                            <span class="summary-label">Add-Ons</span>
+                            <span class="summary-value" id="summary-addons"></span>
                         </div>
                         <div class="summary-row">
                             <span class="summary-label">Date</span>
@@ -179,7 +200,7 @@
                         </div>
                     </div>
                     <div class="step-buttons">
-                        <button type="button" class="btn btn-secondary" onclick="goToStep(3)">Back</button>
+                        <button type="button" class="btn btn-secondary" onclick="goToStep(4)">Back</button>
                         <button type="button" class="btn btn-primary btn-confirm" onclick="submitBooking()">Confirm Booking</button>
                     </div>
                 </div>
