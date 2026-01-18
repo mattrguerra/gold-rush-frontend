@@ -1,0 +1,17 @@
+# Gold Rush Detailing robots.txt
+
+User-agent: *
+Allow /
+
+# Block admin pages
+Disallow: /admin.html
+Disallow: /login.html
+Disallow: /dashboard.html
+Disallow: /api/
+
+# Block utility files
+Disallow: /*.json
+Disallow: /site.webmanifest
+
+# Sitemap location
+Sitemap: https://goldrushdetailing.com/sitemap.xml
