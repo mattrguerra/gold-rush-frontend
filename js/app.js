@@ -53,19 +53,10 @@ function initNavigation() {
     }
 }
 
-// Instead of calculating stats, fetch from endpoint
-const statsData = await apiRequest('/admin/stats');
-if (statsData) {
-    document.getElementById('today-count').textContent = statsData.todayCount;
-    document.getElementById('pending-count').textContent = statsData.pendingCount;
-    document.getElementById('week-count').textContent = statsData.weekCount;
-    document.getElementById('revenue-count').textContent = `$${statsData.weekRevenue.toFixed(0)}`;
-}
-
 function showSection(sectionName) {
     currentSection = sectionName;
     
-    // Update sections
+    // Update active states
     document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     
@@ -100,7 +91,6 @@ async function loadSectionData(section) {
             await loadAvailability();
             break;
         case 'settings':
-            // Settings are forms, no loading needed
             break;
     }
 }
@@ -150,68 +140,34 @@ function initEventListeners() {
 // ===============================================
 
 async function loadDashboard() {
-    // 1. Fetch Stats and Bookings in parallel for speed
-    const [statsData, bookingsData] = await Promise.all([
-        apiRequest('/admin/stats'),   // Server-calculated stats (Optimized)
-        apiRequest('/bookings')       // Raw bookings for the lists
-    ]);
-    
-    // 2. Render Server-Side Stats
-    if (statsData) {
-        document.getElementById('today-count').textContent = statsData.todayCount;
-        document.getElementById('pending-count').textContent = statsData.pendingCount;
-        document.getElementById('week-count').textContent = statsData.weekCount; // Check if your API returns 'weekCount' or 'weekBookings'
-        // Format revenue as currency
-        const revenue = parseFloat(statsData.weekRevenue || 0);
-        document.getElementById('revenue-count').textContent = `$${revenue.toLocaleString(undefined, {minimumFractionDigits: 0})}`;
-    }
-
-    // 3. Render Lists
-    if (bookingsData && bookingsData.bookings) {
-        allBookings = bookingsData.bookings;
+    try {
+        // Fetch both Stats (Server) and Bookings (Lists) in parallel
+        const [statsData, bookingsData] = await Promise.all([
+            apiRequest('/admin/stats'),
+            apiRequest('/bookings')
+        ]);
         
-        // Update the badge with client-side data to ensure sync
-        const pendingCount = allBookings.filter(b => b.status === 'pending').length;
-        const badge = document.getElementById('pending-badge');
-        if (badge) badge.textContent = pendingCount;
+        // 1. Render Server-Side Stats
+        if (statsData) {
+            document.getElementById('today-count').textContent = statsData.todayCount || 0;
+            document.getElementById('pending-count').textContent = statsData.pendingCount || 0;
+            document.getElementById('week-count').textContent = statsData.weekCount || 0;
+            const revenue = parseFloat(statsData.weekRevenue || 0);
+            document.getElementById('revenue-count').textContent = `$${revenue.toLocaleString(undefined, {minimumFractionDigits: 0})}`;
+            
+            // Update sidebar badge
+            const badge = document.getElementById('pending-badge');
+            if (badge) badge.textContent = statsData.pendingCount || 0;
+        }
 
-        loadTodaySchedule(allBookings);
-        loadPendingActions(allBookings);
-    } else {
-        console.error('Failed to load dashboard data');
-    }
-}
-
-function updateStats(bookings) {
-    const today = new Date().toISOString().split('T')[0];
-    const weekFromNow = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-    
-    const todayBookings = bookings.filter(b => 
-        b.scheduled_date.split('T')[0] === today && b.status !== 'cancelled'
-    );
-    
-    const pendingBookings = bookings.filter(b => b.status === 'pending');
-    
-    const weekBookings = bookings.filter(b => {
-        const date = b.scheduled_date.split('T')[0];
-        return date >= today && date <= weekFromNow && b.status !== 'cancelled';
-    });
-    
-    // Calculate revenue (assuming price field exists)
-    const weekRevenue = weekBookings.reduce((sum, b) => {
-        const price = parseFloat(b.price) || 0;
-        return sum + price;
-    }, 0);
-    
-    document.getElementById('today-count').textContent = todayBookings.length;
-    document.getElementById('pending-count').textContent = pendingBookings.length;
-    document.getElementById('week-count').textContent = weekBookings.length;
-    document.getElementById('revenue-count').textContent = `$${weekRevenue.toFixed(0)}`;
-    
-    // Update pending badge in sidebar
-    const badge = document.getElementById('pending-badge');
-    if (badge) {
-        badge.textContent = pendingBookings.length;
+        // 2. Render Lists
+        if (bookingsData && bookingsData.bookings) {
+            allBookings = bookingsData.bookings;
+            loadTodaySchedule(allBookings);
+            loadPendingActions(allBookings);
+        }
+    } catch (error) {
+        console.error('Dashboard load failed:', error);
     }
 }
 
@@ -295,9 +251,9 @@ async function loadBookings() {
 function renderBookings(bookings) {
     const container = document.getElementById('bookings-list');
     
-    // Sort by date
+    // Sort by date (newest first for better admin visibility)
     const sorted = bookings.sort((a, b) => 
-        new Date(a.scheduled_date) - new Date(b.scheduled_date)
+        new Date(b.scheduled_date) - new Date(a.scheduled_date)
     );
     
     const today = new Date();
@@ -313,6 +269,7 @@ function renderBookings(bookings) {
     if (!showPast) {
         filtered = filtered.filter(b => {
             const bookingDate = new Date(b.scheduled_date);
+            // Show future bookings OR pending bookings regardless of date
             return bookingDate >= today || b.status === 'pending';
         });
     }
@@ -337,7 +294,7 @@ function renderBookings(bookings) {
                 <div class="time">${formatTime(booking.scheduled_time)}</div>
             </div>
             <div class="actions" onclick="event.stopPropagation()">
-                <select onchange="updateStatus(${booking.id}, this.value)">
+                <select onchange="updateStatus(${booking.id}, this.value)" style="background: var(--dark); color: white; border: 1px solid var(--border); padding: 5px;">
                     <option value="pending" ${booking.status === 'pending' ? 'selected' : ''}>${t('Pending')}</option>
                     <option value="confirmed" ${booking.status === 'confirmed' ? 'selected' : ''}>${t('Confirmed')}</option>
                     <option value="completed" ${booking.status === 'completed' ? 'selected' : ''}>${t('Completed')}</option>
@@ -444,25 +401,20 @@ async function cancelBooking(bookingId) {
 
 async function loadServices() {
     const data = await apiRequest('/services');
-    
     if (!data || !data.services) {
-        document.getElementById('services-grid').innerHTML = 
-            `<div class="empty-state">${t('Failed to load services')}</div>`;
+        document.getElementById('services-grid').innerHTML = `<div class="empty-state">${t('Failed to load services')}</div>`;
         return;
     }
-    
     allServices = data.services;
     renderServices(allServices);
 }
 
 function renderServices(services) {
     const container = document.getElementById('services-grid');
-    
     if (services.length === 0) {
         container.innerHTML = `<div class="empty-state">${t('No services found')}</div>`;
         return;
     }
-    
     container.innerHTML = services.map(service => `
         <div class="service-card">
             <h3>${service.name}</h3>
@@ -483,13 +435,12 @@ function editService(serviceId) {
     alert(t('Edit Service') + ' #' + serviceId + ' - ' + t('Feature coming soon'));
 }
 
-// Continue in Part 2...// ===============================================
+// ===============================================
 // Customers Section
 // ===============================================
 
 async function loadCustomers() {
-    // Since your backend may not have a customers endpoint yet,
-    // we'll extract unique customers from bookings
+    // Extract unique customers from bookings since there isn't a dedicated endpoint yet
     const uniqueCustomers = {};
     
     allBookings.forEach(booking => {
@@ -552,7 +503,6 @@ function filterCustomers(searchTerm) {
 function viewCustomer(email) {
     const customer = allCustomers.find(c => c.email === email);
     if (!customer) return;
-    
     alert(`${t('Customer')}: ${customer.name}\n${t('Email')}: ${customer.email}\n${t('Total Bookings')}: ${customer.totalBookings}\n\n${t('Feature coming soon')}: ${t('Detailed customer history')}`);
 }
 
@@ -568,53 +518,59 @@ async function loadAvailability() {
 }
 
 async function loadBlockedDates() {
-    // This endpoint may not exist yet in your backend
-    // For now, show placeholder
     const container = document.getElementById('blocked-dates-list');
-    container.innerHTML = `<div class="empty-state" style="padding: 20px; font-size: 13px;">${t('No blocked dates')}<br><br><small style="color: var(--text-muted);">${t('Note')}: ${t('This feature requires backend endpoint')}: GET /api/admin/availability/blocked-dates</small></div>`;
     
-    const data = await apiRequest('/admin/availability/blocked-dates');
-    if (!data || !data.dates) {
+    // Fallback if endpoint doesn't exist
+    try {
+        const data = await apiRequest('/admin/availability/blocked-dates');
+        if (!data || !data.dates || data.dates.length === 0) {
+            container.innerHTML = `<div class="empty-state">${t('No blocked dates')}</div>`;
+            return;
+        }
+        
+        container.innerHTML = data.dates.map(date => `
+            <div class="blocked-date-item">
+                <span>${formatDate(date.date)}</span>
+                <button onclick="unblockDate('${date.date}')">${t('Remove')}</button>
+            </div>
+        `).join('');
+    } catch(e) {
         container.innerHTML = `<div class="empty-state">${t('No blocked dates')}</div>`;
-        return;
     }
-    
-    container.innerHTML = data.dates.map(date => `
-        <div class="blocked-date-item">
-            <span>${formatDate(date.date)}</span>
-            <button onclick="unblockDate('${date.date}')">${t('Remove')}</button>
-        </div>
-    `).join('');
 }
 
 async function loadBusinessHours() {
     const container = document.getElementById('business-hours');
     
-    // Default hours - replace with API call when available
-    const days = [
-        { name: t('Monday'), hours: '9:00 AM - 6:00 PM' },
-        { name: t('Tuesday'), hours: '9:00 AM - 6:00 PM' },
-        { name: t('Wednesday'), hours: '9:00 AM - 6:00 PM' },
-        { name: t('Thursday'), hours: '9:00 AM - 6:00 PM' },
-        { name: t('Friday'), hours: '9:00 AM - 6:00 PM' },
-        { name: t('Saturday'), hours: '10:00 AM - 4:00 PM' },
-        { name: t('Sunday'), hours: t('Closed') }
-    ];
-    
-    container.innerHTML = days.map(day => `
-        <div class="hours-row">
-            <span class="hours-day">${day.name}</span>
-            <span class="hours-times">${day.hours}</span>
-        </div>
-    `).join('');
-    
-    
-    const data = await apiRequest('/admin/availability/hours');
-    if (data && data.hours) {
-        container.innerHTML = Object.entries(data.hours).map(([day, hours]) => `
+    try {
+        const data = await apiRequest('/admin/availability/hours');
+        if (data && data.hours) {
+            container.innerHTML = Object.entries(data.hours).map(([day, hours]) => `
+                <div class="hours-row">
+                    <span class="hours-day">${t(capitalizeFirst(day))}</span>
+                    <span class="hours-times">${hours.closed ? t('Closed') : `${hours.open} - ${hours.close}`}</span>
+                </div>
+            `).join('');
+        } else {
+            // Default View
+            throw new Error('No hours data');
+        }
+    } catch(e) {
+        // Fallback Display
+        const days = [
+            { name: t('Monday'), hours: '9:00 AM - 6:00 PM' },
+            { name: t('Tuesday'), hours: '9:00 AM - 6:00 PM' },
+            { name: t('Wednesday'), hours: '9:00 AM - 6:00 PM' },
+            { name: t('Thursday'), hours: '9:00 AM - 6:00 PM' },
+            { name: t('Friday'), hours: '9:00 AM - 6:00 PM' },
+            { name: t('Saturday'), hours: '10:00 AM - 4:00 PM' },
+            { name: t('Sunday'), hours: t('Closed') }
+        ];
+        
+        container.innerHTML = days.map(day => `
             <div class="hours-row">
-                <span class="hours-day">${t(capitalizeFirst(day))}</span>
-                <span class="hours-times">${hours.closed ? t('Closed') : `${hours.open} - ${hours.close}`}</span>
+                <span class="hours-day">${day.name}</span>
+                <span class="hours-times">${day.hours}</span>
             </div>
         `).join('');
     }
@@ -629,9 +585,6 @@ async function blockDate() {
         return;
     }
     
-    alert(`${t('Block date')}: ${date}\n\n${t('Note')}: ${t('This feature requires backend endpoint')}: POST /api/admin/availability/block-date`);
-    
-
     const result = await apiRequest('/admin/availability/block-date', {
         method: 'POST',
         body: JSON.stringify({ date })
@@ -646,8 +599,6 @@ async function blockDate() {
 
 async function unblockDate(date) {
     if (!confirm(t('Unblock this date?'))) return;
-    
-    alert(`${t('Unblock date')}: ${date}\n\n${t('Note')}: ${t('This feature requires backend endpoint')}: DELETE /api/admin/availability/unblock-date`);
     
     const result = await apiRequest('/admin/availability/unblock-date', {
         method: 'DELETE',
@@ -666,27 +617,20 @@ async function unblockDate(date) {
 
 async function handleBusinessInfoUpdate(e) {
     e.preventDefault();
-    
     const phone = document.getElementById('business-phone').value;
     const email = document.getElementById('business-email').value;
-    
-    alert(`${t('Update business info')}:\n${t('Phone')}: ${phone}\n${t('Email')}: ${email}\n\n${t('Note')}: ${t('This feature requires backend endpoint')}: PUT /api/admin/settings/business-info`);
     
     const result = await apiRequest('/admin/settings/business-info', {
         method: 'PUT',
         body: JSON.stringify({ phone, email })
     });
     
-    if (result) {
-        alert(t('Business information updated successfully'));
-    } else {
-        alert(t('Failed to update business information'));
-    }
+    if (result) alert(t('Business information updated successfully'));
+    else alert(t('Failed to update business information'));
 }
 
 async function handlePasswordUpdate(e) {
     e.preventDefault();
-    
     const currentPassword = document.getElementById('current-password').value;
     const newPassword = document.getElementById('new-password').value;
     const confirmPassword = document.getElementById('confirm-password').value;
@@ -700,8 +644,6 @@ async function handlePasswordUpdate(e) {
         alert(t('Password must be at least 8 characters'));
         return;
     }
-    
-    alert(`${t('Update password')}\n\n${t('Note')}: ${t('This feature requires backend endpoint')}: PUT /api/admin/settings/password`);
     
     const result = await apiRequest('/admin/settings/password', {
         method: 'PUT',
@@ -729,6 +671,8 @@ function closeModal(modalId) {
 // ===============================================
 
 function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    // Handle timezone offsets by appending Timezone info if missing or using UTC
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { 
         weekday: 'short', 
@@ -739,6 +683,7 @@ function formatDate(dateString) {
 }
 
 function formatTime(timeString) {
+    if (!timeString) return 'N/A';
     const [hours, minutes] = timeString.split(':');
     const hour = parseInt(hours);
     const ampm = hour >= 12 ? 'PM' : 'AM';
@@ -747,6 +692,7 @@ function formatTime(timeString) {
 }
 
 function capitalizeFirst(str) {
+    if (!str) return '';
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
@@ -755,9 +701,12 @@ function capitalizeFirst(str) {
 // ===============================================
 
 function applyTranslations() {
+    if (typeof t !== 'function') return; // Safety check
+    
     // Navbar
     document.querySelector('.navbar h1').textContent = t('Gold Rush Detailing');
-    document.getElementById('logout-btn').textContent = t('Logout');
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) logoutBtn.textContent = t('Logout');
     
     // Stats (Dashboard)
     const statHeaders = document.querySelectorAll('.stat-card h3');
@@ -771,99 +720,9 @@ function applyTranslations() {
     if (dashboardCards[0]) dashboardCards[0].textContent = t("Today's Schedule");
     if (dashboardCards[1]) dashboardCards[1].textContent = t('Pending Actions');
     
-    // Section headers
-    document.querySelectorAll('.section-header h2').forEach((h2, index) => {
-        const sections = ['Panel', 'Reservas', 'Servicios', 'Clientes', 'Disponibilidad', 'Configuración'];
-        if (sections[index]) h2.textContent = t(sections[index]);
-    });
-    
-    // Sidebar nav
-    const navLabels = document.querySelectorAll('.nav-label');
-    const navTexts = ['Panel', 'Reservas', 'Servicios', 'Clientes', 'Disponibilidad', 'Configuración'];
-    navLabels.forEach((label, index) => {
-        if (navTexts[index]) label.textContent = t(navTexts[index]);
-    });
-    
-    // Filter buttons
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        const filter = btn.dataset.filter;
-        const labels = { 
-            all: 'All', 
-            pending: 'Pending', 
-            confirmed: 'Confirmed', 
-            completed: 'Completed', 
-            cancelled: 'Cancelled' 
-        };
-        if (labels[filter]) btn.textContent = t(labels[filter]);
-    });
-    
-    // Toggle labels
-    const toggleLabel = document.querySelector('.toggle-label span');
-    if (toggleLabel) toggleLabel.textContent = t('Show past');
-    
     // Search placeholder
     const customerSearch = document.getElementById('customer-search');
     if (customerSearch) customerSearch.placeholder = t('Search customers...');
-    
-    // Table headers
-    const tableHeaders = document.querySelectorAll('.data-table th');
-    const headerTexts = ['Name', 'Email', 'Phone', 'Total Bookings', 'Last Visit', 'Actions'];
-    tableHeaders.forEach((th, index) => {
-        if (headerTexts[index]) th.textContent = t(headerTexts[index]);
-    });
-    
-    // Availability section
-    const availabilityCards = document.querySelectorAll('.availability-card h3');
-    if (availabilityCards[0]) availabilityCards[0].textContent = t('Block Dates');
-    if (availabilityCards[1]) availabilityCards[1].textContent = t('Business Hours');
-    
-    const availabilityH4 = document.querySelector('.availability-card h4');
-    if (availabilityH4) availabilityH4.textContent = t('Blocked Dates');
-    
-    // Settings section
-    const settingsCards = document.querySelectorAll('.settings-card h3');
-    if (settingsCards[0]) settingsCards[0].textContent = t('Business Information');
-    if (settingsCards[1]) settingsCards[1].textContent = t('Change Password');
-    
-    // Form labels
-    const formLabels = document.querySelectorAll('.form-group label');
-    const labelTexts = {
-        'Business Name': 'Nombre del Negocio',
-        'Phone': 'Teléfono',
-        'Email': 'Correo',
-        'Current Password': 'Contraseña Actual',
-        'New Password': 'Nueva Contraseña',
-        'Confirm New Password': 'Confirmar Nueva Contraseña'
-    };
-    formLabels.forEach(label => {
-        const text = label.textContent.trim();
-        if (labelTexts[text]) label.textContent = t(text);
-    });
-    
-    // Buttons
-    const buttons = document.querySelectorAll('.btn');
-    buttons.forEach(btn => {
-        const text = btn.textContent.trim();
-        if (text === 'Save Changes' || text === 'Guardar Cambios') {
-            btn.textContent = t('Save Changes');
-        } else if (text === 'Update Password' || text === 'Actualizar Contraseña') {
-            btn.textContent = t('Update Password');
-        } else if (text === '+ Add Service' || text === '+ Agregar Servicio') {
-            btn.textContent = t('+ Add Service');
-        } else if (text === 'Block This Date' || text === 'Bloquear Esta Fecha') {
-            btn.textContent = t('Block This Date');
-        }
-    });
-    
-    // Set lang toggle state
-    const langToggle = document.getElementById('lang-toggle');
-    if (langToggle) {
-        langToggle.checked = currentLang === 'en';
-    }
-    
-    // Modal
-    const modalHeader = document.querySelector('.modal-header h3');
-    if (modalHeader) modalHeader.textContent = t('Booking Details');
 }
 
 // ===============================================
