@@ -19,13 +19,24 @@ async function loadServices() {
         
         const container = document.getElementById('services-list');
         container.innerHTML = data.services.map(service => {
-            // Parse features from newline-separated string
-            const features = service.features ? service.features.split('\n').filter(f => f.trim()) : [];
-            const featuresHTML = features.length > 0 
-                ? `<ul class="service-features-list">
-                    ${features.map(f => `<li>${f}</li>`).join('')}
-                   </ul>`
-                : `<p class="service-desc">${service.description || ''}</p>`;
+            let featuresHTML = '';
+            
+            // Check if features exists and has content
+            if (service.features && service.features.trim().length > 0) {
+                // Split by newline
+                const features = service.features.split('\n').filter(f => f.trim().length > 0);
+                
+                if (features.length > 0) {
+                    featuresHTML = `<ul class="service-features-list">
+                        ${features.map(f => `<li>${f.trim()}</li>`).join('')}
+                    </ul>`;
+                }
+            }
+            
+            // Fallback to description if no features
+            if (!featuresHTML && service.description) {
+                featuresHTML = `<p class="service-desc">${service.description}</p>`;
+            }
             
             return `
                 <div class="service-card" onclick="selectService(${service.id}, '${service.name.replace(/'/g, "\\'")}', ${service.base_price}, ${service.duration_minutes})">
