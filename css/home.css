@@ -422,7 +422,7 @@ h1, h2, h3, h4 {
 /* Feature Cards */
 .feature-cards {
     padding: 140px 0;
-    display: grid;
+    display: flex;
     grid-template-columns: 1fr 1fr;
     gap: 30px;
 }
@@ -430,6 +430,7 @@ h1, h2, h3, h4 {
 .feature-card {
     position: relative;
     height: 500px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
