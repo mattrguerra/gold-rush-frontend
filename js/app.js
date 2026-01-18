@@ -53,6 +53,15 @@ function initNavigation() {
     }
 }
 
+// Instead of calculating stats, fetch from endpoint
+const statsData = await apiRequest('/admin/stats');
+if (statsData) {
+    document.getElementById('today-count').textContent = statsData.todayCount;
+    document.getElementById('pending-count').textContent = statsData.pendingCount;
+    document.getElementById('week-count').textContent = statsData.weekCount;
+    document.getElementById('revenue-count').textContent = `$${statsData.weekRevenue.toFixed(0)}`;
+}
+
 function showSection(sectionName) {
     currentSection = sectionName;
     
@@ -548,7 +557,6 @@ async function loadBlockedDates() {
     const container = document.getElementById('blocked-dates-list');
     container.innerHTML = `<div class="empty-state" style="padding: 20px; font-size: 13px;">${t('No blocked dates')}<br><br><small style="color: var(--text-muted);">${t('Note')}: ${t('This feature requires backend endpoint')}: GET /api/admin/availability/blocked-dates</small></div>`;
     
-    /* When backend is ready, use this:
     const data = await apiRequest('/admin/availability/blocked-dates');
     if (!data || !data.dates) {
         container.innerHTML = `<div class="empty-state">${t('No blocked dates')}</div>`;
@@ -561,7 +569,6 @@ async function loadBlockedDates() {
             <button onclick="unblockDate('${date.date}')">${t('Remove')}</button>
         </div>
     `).join('');
-    */
 }
 
 async function loadBusinessHours() {
@@ -585,7 +592,7 @@ async function loadBusinessHours() {
         </div>
     `).join('');
     
-    /* When backend is ready:
+    
     const data = await apiRequest('/admin/availability/hours');
     if (data && data.hours) {
         container.innerHTML = Object.entries(data.hours).map(([day, hours]) => `
@@ -595,7 +602,6 @@ async function loadBusinessHours() {
             </div>
         `).join('');
     }
-    */
 }
 
 async function blockDate() {
@@ -609,7 +615,7 @@ async function blockDate() {
     
     alert(`${t('Block date')}: ${date}\n\n${t('Note')}: ${t('This feature requires backend endpoint')}: POST /api/admin/availability/block-date`);
     
-    /* When backend is ready:
+
     const result = await apiRequest('/admin/availability/block-date', {
         method: 'POST',
         body: JSON.stringify({ date })
@@ -620,7 +626,6 @@ async function blockDate() {
         dateInput.value = '';
         await loadBlockedDates();
     }
-    */
 }
 
 async function unblockDate(date) {
@@ -628,7 +633,6 @@ async function unblockDate(date) {
     
     alert(`${t('Unblock date')}: ${date}\n\n${t('Note')}: ${t('This feature requires backend endpoint')}: DELETE /api/admin/availability/unblock-date`);
     
-    /* When backend is ready:
     const result = await apiRequest('/admin/availability/unblock-date', {
         method: 'DELETE',
         body: JSON.stringify({ date })
@@ -638,7 +642,6 @@ async function unblockDate(date) {
         alert(t('Date unblocked'));
         await loadBlockedDates();
     }
-    */
 }
 
 // ===============================================
@@ -653,7 +656,6 @@ async function handleBusinessInfoUpdate(e) {
     
     alert(`${t('Update business info')}:\n${t('Phone')}: ${phone}\n${t('Email')}: ${email}\n\n${t('Note')}: ${t('This feature requires backend endpoint')}: PUT /api/admin/settings/business-info`);
     
-    /* When backend is ready:
     const result = await apiRequest('/admin/settings/business-info', {
         method: 'PUT',
         body: JSON.stringify({ phone, email })
@@ -664,7 +666,6 @@ async function handleBusinessInfoUpdate(e) {
     } else {
         alert(t('Failed to update business information'));
     }
-    */
 }
 
 async function handlePasswordUpdate(e) {
@@ -686,7 +687,6 @@ async function handlePasswordUpdate(e) {
     
     alert(`${t('Update password')}\n\n${t('Note')}: ${t('This feature requires backend endpoint')}: PUT /api/admin/settings/password`);
     
-    /* When backend is ready:
     const result = await apiRequest('/admin/settings/password', {
         method: 'PUT',
         body: JSON.stringify({ currentPassword, newPassword })
@@ -698,7 +698,6 @@ async function handlePasswordUpdate(e) {
     } else {
         alert(t('Failed to update password'));
     }
-    */
 }
 
 // ===============================================
