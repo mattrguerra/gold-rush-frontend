@@ -17,6 +17,13 @@ async function loadServices() {
         const response = await fetch(`${API_URL}/services`);
         const data = await response.json();
         
+        // --- ADD THIS BLOCK ---
+        // Sort services by ID (1, 2, 3, 4...) to ensure grid placement
+        if (data.services) {
+            data.services.sort((a, b) => a.id - b.id);
+        }
+        // ----------------------
+
         const container = document.getElementById('services-list');
         container.innerHTML = data.services.map(service => {
             let featuresHTML = '';
