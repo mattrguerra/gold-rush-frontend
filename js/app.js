@@ -150,20 +150,36 @@ function initEventListeners() {
 // ===============================================
 
 async function loadDashboard() {
-    const data = await apiRequest('/bookings');
-    
-    if (!data || !data.bookings) {
-        console.error('Failed to load dashboard data');
-        return;
-    }
-    
-    allBookings = data.bookings;
-    
-    await Promise.all([
-        updateStats(allBookings),
-        loadTodaySchedule(allBookings),
-        loadPendingActions(allBookings)
+    // 1. Fetch Stats and Bookings in parallel for speed
+    const [statsData, bookingsData] = await Promise.all([
+        apiRequest('/admin/stats'),   // Server-calculated stats (Optimized)
+        apiRequest('/bookings')       // Raw bookings for the lists
     ]);
+    
+    // 2. Render Server-Side Stats
+    if (statsData) {
+        document.getElementById('today-count').textContent = statsData.todayCount;
+        document.getElementById('pending-count').textContent = statsData.pendingCount;
+        document.getElementById('week-count').textContent = statsData.weekCount; // Check if your API returns 'weekCount' or 'weekBookings'
+        // Format revenue as currency
+        const revenue = parseFloat(statsData.weekRevenue || 0);
+        document.getElementById('revenue-count').textContent = `$${revenue.toLocaleString(undefined, {minimumFractionDigits: 0})}`;
+    }
+
+    // 3. Render Lists
+    if (bookingsData && bookingsData.bookings) {
+        allBookings = bookingsData.bookings;
+        
+        // Update the badge with client-side data to ensure sync
+        const pendingCount = allBookings.filter(b => b.status === 'pending').length;
+        const badge = document.getElementById('pending-badge');
+        if (badge) badge.textContent = pendingCount;
+
+        loadTodaySchedule(allBookings);
+        loadPendingActions(allBookings);
+    } else {
+        console.error('Failed to load dashboard data');
+    }
 }
 
 function updateStats(bookings) {

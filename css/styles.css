@@ -12,10 +12,11 @@
 
 :root {
     --gold: #D4AF37;
+    --gold-glow: rgba(212, 175, 55, 0.15);
     --gold-light: #e5c349;
-    --dark: #0a0a0a;
+    --dark: #050505;
     --dark-lighter: #1a1a1a;
-    --dark-card: #141414;
+    --dark-card: #111111;
     --text-white: #ffffff;
     --text-light: #999999;
     --text-muted: #666666;
@@ -123,8 +124,18 @@ button:hover,
 }
 
 .btn-primary {
-    background: var(--gold);
-    color: var(--dark);
+    background: linear-gradient(45deg, #D4AF37 0%, #F4CF57 100%);
+    color: #000;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+    transform: translateY(-1px);
 }
 
 .btn-secondary {
@@ -159,9 +170,9 @@ button:hover,
     justify-content: space-between;
     align-items: center;
     padding: 0 40px;
-    background: var(--dark-card);
-    border-bottom: 1px solid var(--border);
-    z-index: 100;
+    background: linear-gradient(180deg, rgba(20,20,20,0.95) 0%, rgba(5,5,5,0.95) 100%);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2); /* Gold border hint */
+    backdrop-filter: blur(10px);
 }
 
 .navbar h1 {
@@ -270,9 +281,9 @@ button:hover,
 }
 
 .nav-item.active {
-    color: var(--gold);
-    background: rgba(212, 175, 55, 0.1);
+    background: linear-gradient(90deg, var(--gold-glow) 0%, transparent 100%);
     border-left: 3px solid var(--gold);
+    color: var(--gold);
 }
 
 .nav-icon {
@@ -342,11 +353,11 @@ button:hover,
 }
 
 .stat-card {
-    background: var(--dark-lighter);
+    background: linear-gradient(145deg, #1a1a1a 0%, #0a0a0a 100%);
     border: 1px solid var(--border);
-    padding: 30px 25px;
-    text-align: center;
-    transition: transform 0.2s, border-color 0.2s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
 }
 
 .stat-card:hover {
@@ -366,6 +377,7 @@ button:hover,
 .stat-card p {
     font-family: 'Playfair Display', serif;
     color: var(--gold);
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.3); /* Glow effect */
     font-size: 48px;
     font-weight: 700;
     line-height: 1;
