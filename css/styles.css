@@ -1,9 +1,8 @@
 /* ===============================================
-   Gold Rush Detailing - Premium Admin Suite
-   Design Standard: Luxury, Depth, Precision
+   Gold Rush Detailing - Ultra Glass Admin
+   Theme: "Dark Crystal" | v2.0
    =============================================== */
 
-/* 1. Typography & Imports */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap');
 
 :root {
@@ -11,101 +10,68 @@
     --gold: #D4AF37;
     --gold-light: #F4CF57;
     --gold-dim: rgba(212, 175, 55, 0.1);
-    --gold-glow: 0 0 20px rgba(212, 175, 55, 0.15);
     
-    --dark: #0a0a0a;          /* Deepest Black */
-    --dark-card: #141414;     /* Card Background */
-    --dark-border: #222222;   /* Subtle Border */
+    --dark: #050505;          /* Deepest Black */
+    --glass-surface: rgba(20, 20, 20, 0.6); /* The Glass Base */
+    --glass-border: rgba(255, 255, 255, 0.08); /* Cut Glass Edge */
+    --glass-border-highlight: rgba(255, 255, 255, 0.15); /* Top Edge Highlight */
     
     --text-white: #ffffff;
-    --text-gray: #a3a3a3;     /* Elegant Muted Text */
+    --text-gray: #a3a3a3;
     
     --success: #22c55e;
     --error: #ef4444;
     --warning: #f59e0b;
     
-    /* Layout */
+    /* Physics */
+    --blur-strength: 20px;
+    --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    
     --sidebar-width: 280px;
     --navbar-height: 80px;
-    --card-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
-/* 2. Global Reset & Base */
+/* 1. Global Reset & Ambient World */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     background-color: var(--dark);
+    /* The Ambient Light: This creates the "depth" behind the glass */
+    background-image: 
+        radial-gradient(circle at 15% 25%, rgba(212, 175, 55, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 75%, rgba(212, 175, 55, 0.05) 0%, transparent 40%);
+    background-attachment: fixed;
     color: var(--text-white);
     font-family: 'Montserrat', sans-serif;
     font-size: 14px;
     line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-}
-
-h1, h2, h3, h4 {
-    font-family: 'Playfair Display', serif;
-    font-weight: 400;
-}
-
-/* ===============================================
-   Login Page (The Portal)
-   =============================================== */
-.login-body {
-    background: radial-gradient(circle at top right, #1a1a1a 0%, #0a0a0a 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
     min-height: 100vh;
 }
 
-.login-container {
-    width: 100%;
-    max-width: 420px;
-    background: rgba(20, 20, 20, 0.95);
-    border: 1px solid var(--dark-border);
-    padding: 60px 40px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-    text-align: center;
-    position: relative;
-    backdrop-filter: blur(10px);
-}
+h1, h2, h3, h4 { font-family: 'Playfair Display', serif; font-weight: 400; }
 
-.login-container::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 2px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-}
-
-.login-header h1 {
-    font-size: 32px;
-    color: var(--gold);
-    margin-bottom: 10px;
-    letter-spacing: 0.5px;
-}
-
-.login-header h2 {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    color: var(--text-gray);
-    margin-bottom: 40px;
+/* ===============================================
+   Glass Components (The "Frosted" Effect)
+   =============================================== */
+.glass-panel {
+    background: var(--glass-surface);
+    backdrop-filter: blur(var(--blur-strength));
+    -webkit-backdrop-filter: blur(var(--blur-strength));
+    border: 1px solid var(--glass-border);
+    border-top: 1px solid var(--glass-border-highlight); /* Light hitting top edge */
+    box-shadow: var(--card-shadow);
 }
 
 /* ===============================================
-   Navigation (Glassmorphism)
+   Navigation
    =============================================== */
 .navbar {
-    position: fixed;
-    top: 0; left: 0; right: 0;
+    position: fixed; top: 0; left: 0; right: 0;
     height: var(--navbar-height);
-    background: rgba(10, 10, 10, 0.9);
+    background: rgba(5, 5, 5, 0.7); /* High transparency */
     backdrop-filter: blur(15px);
-    border-bottom: 1px solid var(--dark-border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    border-bottom: 1px solid var(--glass-border);
+    display: flex; justify-content: space-between; align-items: center;
     padding: 0 40px;
     z-index: 100;
 }
@@ -113,13 +79,17 @@ h1, h2, h3, h4 {
 .navbar h1 {
     color: var(--gold);
     font-size: 24px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
 }
 
-.header-controls { display: flex; align-items: center; gap: 30px; }
+.header-controls { display: flex; align-items: center; gap: 25px; }
 
+/* Glass Button */
 #logout-btn {
-    background: transparent;
-    border: 1px solid var(--dark-border);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
     color: var(--text-gray);
     padding: 10px 20px;
     font-size: 11px;
@@ -127,23 +97,26 @@ h1, h2, h3, h4 {
     text-transform: uppercase;
     letter-spacing: 2px;
     transition: all 0.3s;
+    backdrop-filter: blur(5px);
 }
 
 #logout-btn:hover {
     border-color: var(--gold);
     color: var(--gold);
+    background: rgba(212, 175, 55, 0.1);
 }
 
 /* ===============================================
-   Sidebar (Control Center)
+   Sidebar
    =============================================== */
 .sidebar {
     position: fixed;
-    top: var(--navbar-height); left: 0; bottom: 0;
+    top: 0; left: 0; bottom: 0;
     width: var(--sidebar-width);
-    background: var(--dark-card);
-    border-right: 1px solid var(--dark-border);
-    padding-top: 40px;
+    padding-top: var(--navbar-height);
+    background: rgba(10, 10, 10, 0.5); /* Semi-transparent */
+    backdrop-filter: blur(15px);
+    border-right: 1px solid var(--glass-border);
     z-index: 90;
 }
 
@@ -161,23 +134,14 @@ h1, h2, h3, h4 {
 
 .nav-item:hover {
     color: var(--text-white);
-    background: rgba(255,255,255,0.02);
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .nav-item.active {
     border-left-color: var(--gold);
     color: var(--gold);
-    background: linear-gradient(90deg, var(--gold-dim) 0%, transparent 100%);
-}
-
-.nav-badge {
-    margin-left: auto;
-    background: var(--gold);
-    color: #000;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 2px;
+    background: linear-gradient(90deg, rgba(212, 175, 55, 0.1) 0%, transparent 100%);
+    box-shadow: inset 0 0 30px rgba(212, 175, 55, 0.02);
 }
 
 /* ===============================================
@@ -185,46 +149,45 @@ h1, h2, h3, h4 {
    =============================================== */
 .dashboard {
     margin-left: var(--sidebar-width);
-    margin-top: var(--navbar-height);
-    padding: 60px;
-    min-height: calc(100vh - var(--navbar-height));
+    padding: calc(var(--navbar-height) + 50px) 50px 50px;
+    min-height: 100vh;
 }
 
 .section-header {
     display: flex; justify-content: space-between; align-items: flex-end;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
     padding-bottom: 20px;
-    border-bottom: 1px solid var(--dark-border);
+    border-bottom: 1px solid var(--glass-border);
 }
 
-.section-header h2 {
-    font-size: 42px;
-    color: var(--text-white);
-}
+.section-header h2 { font-size: 42px; color: var(--text-white); }
 
-/* ===============================================
-   Premium Cards (Stats & Content)
-   =============================================== */
+/* Stats Grid */
 .stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 30px;
-    margin-bottom: 60px;
+    margin-bottom: 50px;
 }
 
 .stat-card {
-    background: var(--dark-card);
-    padding: 40px 30px;
-    border: 1px solid var(--dark-border);
-    transition: all 0.4s ease;
+    /* Extending Glass Panel */
+    background: var(--glass-surface);
+    backdrop-filter: blur(var(--blur-strength));
+    border: 1px solid var(--glass-border);
+    border-top: 1px solid var(--glass-border-highlight);
+    box-shadow: var(--card-shadow);
+    
+    padding: 35px 30px;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     position: relative;
     overflow: hidden;
 }
 
 .stat-card:hover {
-    border-color: var(--gold);
     transform: translateY(-5px);
-    box-shadow: var(--card-shadow);
+    border-color: rgba(212, 175, 55, 0.3);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(212, 175, 55, 0.1);
 }
 
 .stat-card h3 {
@@ -233,26 +196,31 @@ h1, h2, h3, h4 {
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .stat-card p {
     font-family: 'Playfair Display', serif;
-    font-size: 48px;
+    font-size: 46px;
     color: var(--gold);
-    line-height: 1;
-    text-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+    text-shadow: 0 0 25px rgba(212, 175, 55, 0.25); /* Illuminated Text */
 }
 
-.dashboard-card, .settings-card, .availability-card, .service-card {
-    background: var(--dark-card);
-    border: 1px solid var(--dark-border);
+/* Content Panels */
+.dashboard-card, .settings-card, .booking-card, .availability-card {
+    background: var(--glass-surface);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-top: 1px solid var(--glass-border-highlight);
+    box-shadow: var(--card-shadow);
     margin-bottom: 30px;
+    transition: border-color 0.3s;
 }
 
 .card-header {
     padding: 25px 35px;
-    border-bottom: 1px solid var(--dark-border);
+    border-bottom: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.01);
     display: flex; justify-content: space-between; align-items: center;
 }
 
@@ -260,69 +228,63 @@ h1, h2, h3, h4 {
 .card-content { padding: 35px; }
 
 /* ===============================================
-   Booking Lists (Data Grids)
+   Data Grids & Lists
    =============================================== */
 .booking-card {
-    background: var(--dark-card);
-    border: 1px solid var(--dark-border);
-    padding: 30px 35px;
     display: grid;
     grid-template-columns: 2fr 2fr 1.5fr auto;
     gap: 20px;
     align-items: center;
-    margin-bottom: 15px;
-    transition: all 0.3s;
+    padding: 25px 35px;
     cursor: pointer;
 }
 
 .booking-card:hover {
+    background: rgba(255, 255, 255, 0.02);
     border-color: var(--gold);
-    background: rgba(255,255,255,0.01);
-    transform: translateX(5px);
 }
 
-.booking-card h4 {
-    font-size: 18px;
-    color: var(--text-white);
-    margin-bottom: 5px;
-}
-
+.booking-card strong { color: var(--gold); font-weight: 400; letter-spacing: 0.5px; }
 .booking-card p { color: var(--text-gray); font-size: 13px; }
-.booking-card strong { color: var(--gold); font-weight: 400; font-family: 'Playfair Display', serif; }
 
 /* Status Badges */
-.status-badge {
-    padding: 6px 12px;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+.status-badge { padding: 6px 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.status-pending { color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.05); }
+.status-confirmed { color: var(--success); border: 1px solid rgba(34, 197, 94, 0.3); background: rgba(34, 197, 94, 0.05); }
+
+/* Table */
+.customers-table-container {
+    background: transparent;
+    border: 1px solid var(--glass-border);
 }
-.status-pending { color: var(--warning); border: 1px solid var(--warning); background: rgba(245, 158, 11, 0.05); }
-.status-confirmed { color: var(--success); border: 1px solid var(--success); background: rgba(34, 197, 94, 0.05); }
-.status-completed { color: var(--gold); border: 1px solid var(--gold); background: rgba(212, 175, 55, 0.05); }
-.status-cancelled { color: var(--error); border: 1px solid var(--error); background: rgba(239, 68, 68, 0.05); }
+.data-table th {
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--text-gray);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 20px 30px;
+    text-align: left;
+    border-bottom: 1px solid var(--glass-border);
+}
+.data-table td { padding: 20px 30px; border-bottom: 1px solid var(--glass-border); }
+.data-table tr:hover td { background: rgba(255, 255, 255, 0.02); }
 
 /* ===============================================
-   Forms & Inputs
+   Glass Forms
    =============================================== */
-.form-group { margin-bottom: 25px; text-align: left; }
-
+.form-group { margin-bottom: 25px; }
 label {
-    display: block;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--text-gray);
-    margin-bottom: 12px;
+    display: block; font-size: 11px; font-weight: 600; 
+    letter-spacing: 1.5px; text-transform: uppercase; 
+    color: var(--text-gray); margin-bottom: 12px;
 }
 
 input, select, textarea {
     width: 100%;
     padding: 16px 20px;
-    background: var(--dark);
-    border: 1px solid var(--dark-border);
+    background: rgba(0, 0, 0, 0.2); /* See-through input */
+    border: 1px solid var(--glass-border);
     color: var(--text-white);
     font-family: 'Montserrat', sans-serif;
     font-size: 14px;
@@ -331,12 +293,13 @@ input, select, textarea {
 
 input:focus, select:focus {
     outline: none;
+    background: rgba(0, 0, 0, 0.4);
     border-color: var(--gold);
-    box-shadow: var(--gold-glow);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
 }
 
 .btn-primary {
-    background: var(--gold);
+    background: linear-gradient(135deg, var(--gold), #b89628);
     color: #000;
     padding: 16px 32px;
     font-size: 12px;
@@ -345,46 +308,48 @@ input:focus, select:focus {
     letter-spacing: 2px;
     border: none;
     cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     transition: all 0.3s;
-    width: 100%; /* Default to full width in forms */
+    width: 100%;
 }
 
 .btn-primary:hover {
-    background: var(--gold-light);
     transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
 }
 
 /* ===============================================
-   Utilities & Mobile
+   Login Page Specifics
    =============================================== */
-.content-section { display: none; animation: fadeUp 0.5s ease; }
-.content-section.active { display: block; }
-
-@keyframes fadeUp {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
+.login-body {
+    /* Central Ambient Glow */
+    background-image: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.15) 0%, transparent 60%);
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh;
 }
 
+.login-container {
+    width: 100%; max-width: 420px;
+    background: rgba(10, 10, 10, 0.5);
+    backdrop-filter: blur(25px); /* Heavy Blur for Login */
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    padding: 60px 40px;
+    text-align: center;
+    position: relative;
+}
+
+.login-container::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-    .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+    .sidebar { transform: translateX(-100%); }
     .sidebar.active { transform: translateX(0); }
-    .dashboard { margin-left: 0; padding: 25px; }
-    .navbar { padding: 0 20px; }
+    .dashboard { margin-left: 0; padding: 100px 20px; }
     .stats { grid-template-columns: 1fr; }
-    .booking-card { grid-template-columns: 1fr; }
-    .btn-primary { width: 100%; }
-}
-
-.sidebar-toggle { display: none; }
-@media (max-width: 768px) {
-    .sidebar-toggle {
-        display: flex; align-items: center; justify-content: center;
-        position: fixed; bottom: 30px; right: 30px;
-        width: 60px; height: 60px;
-        background: var(--gold); color: #000;
-        border: none; border-radius: 50%;
-        font-size: 24px; z-index: 200;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
 }
