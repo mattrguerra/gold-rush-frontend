@@ -1,137 +1,58 @@
 // ===============================================
-// Gold Rush Admin - Core Logic
+// Gold Rush Admin - Dashboard Logic
 // ===============================================
 
-// 1. Translations (Issue 5)
-const translations = {
-    es: {
-        'Panel': 'Panel',
-        'Reservas': 'Reservas',
-        'Servicios': 'Servicios',
-        'Clientes': 'Clientes',
-        'Disponibilidad': 'Disponibilidad',
-        'Configuración': 'Configuración',
-        'Citas de Hoy': 'Citas de Hoy',
-        'Pendientes': 'Pendientes',
-        'Esta Semana': 'Esta Semana',
-        'Ingresos': 'Ingresos',
-        'Agenda de Hoy': 'Agenda de Hoy',
-        'Cerrar Sesión': 'Cerrar Sesión',
-        'Todas': 'Todas',
-        'Cargando...': 'Cargando...',
-        'No hay citas para hoy': 'No hay citas para hoy',
-        'Información del Negocio': 'Información del Negocio'
-    },
-    en: {
-        'Panel': 'Dashboard',
-        'Reservas': 'Bookings',
-        'Servicios': 'Services',
-        'Clientes': 'Clients',
-        'Disponibilidad': 'Availability',
-        'Configuración': 'Settings',
-        'Citas de Hoy': "Today's Jobs",
-        'Pendientes': 'Pending',
-        'Esta Semana': 'This Week',
-        'Ingresos': 'Revenue',
-        'Agenda de Hoy': "Today's Agenda",
-        'Cerrar Sesión': 'Log Out',
-        'Todas': 'All',
-        'Cargando...': 'Loading...',
-        'No hay citas para hoy': 'No bookings for today',
-        'Información del Negocio': 'Business Info'
-    }
-};
-
-// 2. Navigation & State Management (Issue 4 Fix)
+// 1. Navigation Logic
 function switchView(viewName, navElement) {
-    // Save state so we don't "jump" on reload
     localStorage.setItem('activeView', viewName);
 
-    // Update UI
+    // Toggle Sections
     document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
     const target = document.getElementById(`view-${viewName}`);
     if (target) target.classList.add('active');
     
-    // Update Sidebar
+    // Toggle Sidebar Active State
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
     if (navElement) {
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         navElement.classList.add('active');
     } else {
-        // If navElement wasn't passed (page load), find it
-        const sidebarLink = document.querySelector(`.nav-item[onclick*="'${viewName}'"]`);
-        if (sidebarLink) {
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            sidebarLink.classList.add('active');
-        }
+        // Fallback for page load
+        const link = document.querySelector(`.nav-item[onclick*="'${viewName}'"]`);
+        if (link) link.classList.add('active');
     }
 
-    // Update Header Text based on current language
-    const currentLang = localStorage.getItem('lang') || 'es';
-    const key = document.querySelector(`.nav-item[onclick*="'${viewName}'"] span[data-i18n]`)?.getAttribute('data-i18n') || 'Panel';
-    document.getElementById('page-header-title').textContent = translations[currentLang][key] || key;
+    // Update Header Title (using t() from translations.js)
+    const titleKey = document.querySelector(`.nav-item[onclick*="'${viewName}'"] span[data-i18n]`)?.getAttribute('data-i18n') || 'Panel';
+    const headerTitle = document.getElementById('page-header-title');
+    if (headerTitle) headerTitle.textContent = t(titleKey);
 
-    // Load Data
+    // Load Data for this section
     loadSectionData(viewName);
 }
 
-// 3. Language Toggle (Issue 4 & 5 Fix)
-function toggleLanguage() {
-    const isChecked = document.getElementById('lang-toggle').checked;
-    const newLang = isChecked ? 'en' : 'es';
-    localStorage.setItem('lang', newLang);
-    
-    // Apply immediately without full reload if possible, but reload ensures cleanest state
-    location.reload(); 
-}
-
-function applyTranslations() {
-    const lang = localStorage.getItem('lang') || 'es';
-    
-    // Update Toggle State
-    const toggle = document.getElementById('lang-toggle');
-    if (toggle) toggle.checked = (lang === 'en');
-
-    // Translate all elements with data-i18n
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (translations[lang][key]) {
-            el.textContent = translations[lang][key];
-        }
-    });
-
-    // Date Format
-    const dateOptions = { weekday: 'long', month: 'long', day: 'numeric' };
-    const dateLocale = lang === 'en' ? 'en-US' : 'es-ES';
-    document.getElementById('current-date').textContent = new Date().toLocaleDateString(dateLocale, dateOptions);
-}
-
-// 4. Data Loading (Issue 3 Fix)
+// 2. Data Loader
 async function loadSectionData(section) {
     if (section === 'dashboard') {
         try {
-            // Fetch stats from your backend
-            // Using your existing apiRequest function from auth.js
-            const stats = await apiRequest('/admin/stats'); 
-            
+            // Stats
+            const stats = await apiRequest('/admin/stats');
             if (stats) {
                 document.getElementById('today-count').textContent = stats.todayCount || 0;
                 document.getElementById('pending-count').textContent = stats.pendingCount || 0;
                 document.getElementById('week-count').textContent = stats.weekCount || 0;
-                // Format Currency
-                const rev = stats.weekRevenue || 0;
-                document.getElementById('revenue-count').textContent = `$${parseFloat(rev).toLocaleString()}`;
+                document.getElementById('revenue-count').textContent = `$${parseFloat(stats.weekRevenue || 0).toLocaleString()}`;
             }
 
-            // Fetch Today's Schedule
+            // Today's Agenda
             const bookingsData = await apiRequest('/bookings');
+            const container = document.getElementById('today-schedule');
+            
             if (bookingsData && bookingsData.bookings) {
                 const today = new Date().toISOString().split('T')[0];
                 const todayList = bookingsData.bookings.filter(b => b.scheduled_date.startsWith(today));
                 
-                const container = document.getElementById('today-schedule');
                 if (todayList.length === 0) {
-                    const lang = localStorage.getItem('lang') || 'es';
-                    container.innerHTML = `<div style="padding: 25px; color: var(--text-secondary);">${translations[lang]['No hay citas para hoy']}</div>`;
+                    container.innerHTML = `<div style="padding: 25px; color: var(--text-secondary);">${t('No hay citas para hoy')}</div>`;
                 } else {
                     container.innerHTML = todayList.map(b => `
                         <div style="padding: 15px 25px; border-bottom: 1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center;">
@@ -148,25 +69,36 @@ async function loadSectionData(section) {
             console.error("Dashboard Load Error:", e);
         }
     }
-    // Add other cases (bookings, etc.) here...
-}
-
-function logout() {
-    localStorage.removeItem('token');
-    window.location.href = 'login.html';
-}
-
-// 5. Init
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Auth Check
-    if (typeof checkAuth === 'function') checkAuth();
-
-    // 2. Restore Active Tab (Fixes "Mystery Toggle Jump")
-    const savedView = localStorage.getItem('activeView') || 'dashboard';
     
-    // 3. Apply Translations
-    applyTranslations();
+    if (section === 'bookings') {
+        const container = document.getElementById('bookings-list');
+        container.innerHTML = `<div style="padding:25px;">${t('Cargando...')}</div>`;
+        
+        const data = await apiRequest('/bookings');
+        if (data && data.bookings) {
+            if (data.bookings.length === 0) {
+                container.innerHTML = `<div style="padding:25px;">No bookings found.</div>`;
+                return;
+            }
+            // Simple Table Render
+            container.innerHTML = data.bookings.map(b => `
+                <div style="padding: 20px; border-bottom: 1px solid var(--glass-border); display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; align-items: center;">
+                    <div>
+                        <strong style="color:white; display:block;">${b.customer_name}</strong>
+                        <span style="font-size:12px; color:var(--text-secondary);">${b.email}</span>
+                    </div>
+                    <div style="color:var(--gold);">${b.service_name}</div>
+                    <div style="color:white;">${b.scheduled_date.split('T')[0]}</div>
+                    <div><span class="status-badge status-${b.status}">${b.status}</span></div>
+                </div>
+            `).join('');
+        }
+    }
+}
 
-    // 4. Switch to saved view
+// 3. Init
+document.addEventListener('DOMContentLoaded', () => {
+    // Restore View
+    const savedView = localStorage.getItem('activeView') || 'dashboard';
     switchView(savedView);
 });

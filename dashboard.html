@@ -9,13 +9,11 @@
 <body>
 
 <div class="app-layout">
-    
     <aside class="sidebar">
         <div>
             <div class="brand">
                 <img src="images/logo.svg" alt="Gold Rush Detailing">
             </div>
-            
             <nav class="nav-group">
                 <a href="#" class="nav-item active" onclick="switchView('dashboard', this)">
                     <span>📊</span> <span data-i18n="Panel">Panel</span>
@@ -40,26 +38,25 @@
 
         <div class="user-profile">
             <div style="width: 32px; height: 32px; background: var(--gold-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: black;">A</div>
-            <div style="flex:1;">
+            <div style="flex:1; margin-left: 10px;">
                 <div style="font-size:12px; font-weight:600;">Admin</div>
             </div>
             
             <label class="ios-toggle" title="Switch Language">
                 <span style="font-size: 10px; color: var(--text-secondary); margin-right: 5px;">ES / EN</span>
-                <input type="checkbox" id="lang-toggle" onchange="toggleLanguage()">
+                <input type="checkbox" id="lang-toggle" onchange="toggleGlobalLanguage()">
                 <div class="switch"></div>
             </label>
         </div>
     </aside>
 
     <main class="main-content">
-        
         <div class="header-bar">
             <div class="page-title">
                 <h2 id="page-header-title" data-i18n="Panel">Panel</h2>
-                <p id="current-date">Domingo, 18 de Enero</p>
+                <p id="current-date">...</p>
             </div>
-            <button class="btn" style="background: rgba(255,255,255,0.1); color: white;" id="logout-btn" onclick="logout()" data-i18n="Cerrar Sesión">Cerrar Sesión</button>
+            <button class="btn" style="background: rgba(255,255,255,0.1); color: white;" id="logout-btn" data-i18n="Cerrar Sesión">Cerrar Sesión</button>
         </div>
 
         <div id="view-dashboard" class="view-section active">
@@ -102,13 +99,21 @@
             </div>
         </div>
         
+        <div id="view-services" class="view-section">
+             </div>
+
+        <div id="view-customers" class="view-section">
+             </div>
+
+        <div id="view-availability" class="view-section">
+             </div>
+
         <div id="view-settings" class="view-section">
             <div class="glass-panel" style="padding: 30px; max-width: 500px;">
                 <h3 style="margin-bottom: 20px;" data-i18n="Información del Negocio">Información del Negocio</h3>
-                </div>
+            </div>
         </div>
-
-        </main>
+    </main>
 </div>
 
 <script src="js/translations.js"></script>
