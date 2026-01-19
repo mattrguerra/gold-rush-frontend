@@ -3,124 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold Rush | Admin</title>
+    <title>Onyx Admin | Dashboard</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-<div class="app-shell">
-    
-    <aside class="sidebar">
-        <div class="brand">
-            <img src="images/logo.svg" alt="Gold Rush" class="brand-logo">
-        </div>
-        
-        <nav class="nav-menu">
-            <a href="#dashboard" class="nav-item active">
-                <span class="icon">📊</span> <span data-i18n="nav_dashboard">Panel</span>
-            </a>
-            <a href="#bookings" class="nav-item">
-                <span class="icon">📅</span> <span data-i18n="nav_bookings">Reservas</span>
-            </a>
-            <a href="#services" class="nav-item">
-                <span class="icon">✨</span> <span data-i18n="nav_services">Servicios</span>
-            </a>
-            <a href="#customers" class="nav-item">
-                <span class="icon">👥</span> <span data-i18n="nav_clients">Clientes</span>
-            </a>
-            <a href="#availability" class="nav-item">
-                <span class="icon">🗓️</span> <span data-i18n="nav_availability">Disponibilidad</span>
-            </a>
-            <a href="#settings" class="nav-item">
-                <span class="icon">⚙️</span> <span data-i18n="nav_settings">Configuración</span>
-            </a>
-        </nav>
-
-        <div class="sidebar-footer">
-            <div class="user-card">
-                <div class="user-avatar">A</div>
-                <div class="user-info">
-                    <span class="user-name">Admin</span>
-                    <span class="user-role">Manager</span>
-                </div>
-            </div>
-            
-            <div class="toggle-wrapper">
-                <span class="toggle-label">ES / EN</span>
-                <label class="switch">
-                    <input type="checkbox" id="lang-toggle">
-                    <span class="slider round"></span>
-                </label>
-            </div>
-        </div>
-    </aside>
-
-    <main class="content-area">
-        
-        <header class="top-bar">
-            <div class="page-titles">
-                <h1 id="page-title" data-i18n="header_dashboard">Panel de Control</h1>
-                <p id="current-date">Cargando fecha...</p>
-            </div>
-            <button onclick="logout()" class="btn-ghost" data-i18n="nav_logout">Cerrar Sesión</button>
-        </header>
-
-        <section id="view-dashboard" class="view-section">
-            <div class="stats-row">
-                <div class="card stat-card">
-                    <div class="stat-label" data-i18n="stat_today">Citas de Hoy</div>
-                    <div class="stat-number" id="val-today">0</div>
-                </div>
-                <div class="card stat-card">
-                    <div class="stat-label" data-i18n="stat_pending">Pendientes</div>
-                    <div class="stat-number" id="val-pending">0</div>
-                </div>
-                <div class="card stat-card">
-                    <div class="stat-label" data-i18n="stat_week">Esta Semana</div>
-                    <div class="stat-number" id="val-week">0</div>
-                </div>
-                <div class="card stat-card">
-                    <div class="stat-label" data-i18n="stat_revenue">Ingresos</div>
-                    <div class="stat-number gold-text" id="val-revenue">$0</div>
-                </div>
+    <div class="app-layout">
+        <aside class="sidebar glass-panel">
+            <div class="brand">
+                <h2>Onyx<span class="gold-dot">.</span></h2>
             </div>
 
-            <div class="grid-split">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 data-i18n="lbl_today_agenda">Agenda del Día</h3>
-                    </div>
-                    <div class="card-body" id="today-list">
-                        </div>
+            <nav class="nav-menu">
+                <button class="nav-btn active" data-target="overview">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span data-i18n="navOverview">Resumen</span>
+                </button>
+                <button class="nav-btn" data-target="users">
+                    <i class="fa-solid fa-users"></i>
+                    <span data-i18n="navUsers">Usuarios</span>
+                </button>
+                <button class="nav-btn" data-target="tools">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    <span data-i18n="navTools">Herramientas</span>
+                </button>
+                <button class="nav-btn" data-target="settings">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span data-i18n="navSettings">Ajustes</span>
+                </button>
+            </nav>
+
+            <div class="user-footer">
+                <div class="avatar">MG</div>
+                <div class="user-meta">
+                    <span class="name">Matt Guerra</span>
+                    <span class="role">Super Admin</span>
                 </div>
             </div>
-        </section>
+        </aside>
 
-        <section id="view-bookings" class="view-section" style="display:none;">
-            <div class="card table-card">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th data-i18n="lbl_customer">Cliente</th>
-                            <th data-i18n="lbl_service">Servicio</th>
-                            <th data-i18n="lbl_date">Fecha</th>
-                            <th data-i18n="lbl_status">Estado</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="bookings-table-body">
-                        </tbody>
-                </table>
-            </div>
-        </section>
+        <main class="main-content">
+            <header class="top-header glass-panel">
+                <h1 id="pageTitle" data-i18n="navOverview">Resumen</h1>
+                <div class="header-controls">
+                    <button id="langToggle" class="control-btn">EN / ES</button>
+                    <button class="control-btn"><i class="fa-solid fa-bell"></i></button>
+                    <button id="logoutBtn" class="control-btn"><i class="fa-solid fa-power-off"></i></button>
+                </div>
+            </header>
 
-        <section id="view-services" class="view-section" style="display:none;"><h2 style="color:white;">Services Coming Soon</h2></section>
-        <section id="view-customers" class="view-section" style="display:none;"><h2 style="color:white;">Customers Coming Soon</h2></section>
-        
-    </main>
-</div>
+            <div id="viewContainer" class="view-container">
+                </div>
+        </main>
+    </div>
 
-<script src="js/app.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
