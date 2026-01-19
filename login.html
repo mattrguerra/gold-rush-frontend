@@ -6,31 +6,57 @@
     <title>Login | Gold Rush Detailing</title>
     <link rel="stylesheet" href="css/styles.css">
     <style>
-        /* Specific Styles for Login Input Fields */
-        .input-group { margin-bottom: 20px; text-align: left; }
-        .input-label {
-            display: block; color: var(--text-secondary);
-            font-size: 11px; font-weight: 700; margin-bottom: 8px;
-            text-transform: uppercase; letter-spacing: 1px; margin-left: 4px;
+        /* Login-Specific Layout */
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
+
+        /* iOS-Style Inputs */
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-left: 4px;
+        }
+
         .ios-input {
             width: 100%;
-            background: rgba(0, 0, 0, 0.3); /* Darker for better contrast */
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
             padding: 16px;
             color: var(--text-primary);
-            font-size: 16px; 
+            font-size: 16px; /* Prevents zoom on mobile */
             font-family: inherit;
             outline: none;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
+
         .ios-input:focus {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(255, 255, 255, 0.1);
             border-color: var(--gold);
             box-shadow: 0 0 0 1px var(--gold);
         }
-        .lang-wrapper { position: absolute; top: 24px; right: 24px; z-index: 10; }
+
+        /* Language Toggle Positioning */
+        .lang-wrapper {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            z-index: 10;
+        }
     </style>
 </head>
 <body class="login-body">
@@ -42,14 +68,16 @@
         </label>
     </div>
 
-    <div class="glass-panel" style="width: 100%; max-width: 400px; padding: 48px 40px; text-align: center; position: relative;">
+    <div class="glass-panel" style="width: 100%; max-width: 400px; padding: 48px 40px; text-align: center; position: relative; overflow: hidden;">
         
-        <div style="margin-bottom: 40px;">
-            <h1 style="font-size: 28px; color: var(--gold); margin-bottom: 8px;">GOLD RUSH</h1>
-            <p style="color: var(--text-secondary); font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;">Admin Portal</p>
+        <div style="position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 60%); pointer-events:none;"></div>
+
+        <div style="margin-bottom: 40px; position:relative;">
+            <h1 style="font-size: 28px; color: var(--gold); letter-spacing: -0.5px; margin-bottom: 8px;">GOLD RUSH</h1>
+            <p style="color: var(--text-secondary); font-size: 13px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase;">Admin Portal</p>
         </div>
 
-        <form id="login-form" onsubmit="handleLogin(event)">
+        <form id="login-form" style="position:relative;">
             <div class="input-group">
                 <label for="username" class="input-label" id="label-username">Username</label>
                 <input type="text" id="username" name="username" class="ios-input" required autocomplete="username" placeholder="Enter ID">
@@ -60,80 +88,41 @@
                 <input type="password" id="password" name="password" class="ios-input" required autocomplete="current-password" placeholder="••••••••">
             </div>
 
-            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 14px; border-radius: 14px;" id="btn-login">
-                Enter Dashboard
-            </button>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 14px; border-radius: 14px;" id="btn-login">Enter Dashboard</button>
             
-            <p id="error-message" style="color: var(--danger); font-size: 13px; margin-top: 20px; min-height: 20px; font-weight: 500;"></p>
+            <p id="error-message" style="color: var(--danger); font-size: 13px; margin-top: 20px; min-height: 20px; font-weight: 500; text-align: center;"></p>
         </form>
     </div>
 
     <script src="js/translations.js"></script>
+    <script src="js/auth.js"></script> 
+    
     <script>
-        // 1. Language Toggle Logic
-        const currentLang = localStorage.getItem('lang') || 'es';
-        document.getElementById('lang-toggle').checked = (currentLang === 'en');
+        // 1. Check Auth on Load
+        if(localStorage.getItem('token')) {
+            window.location.href = 'dashboard.html';
+        }
 
+        // 2. Language Toggle Logic
         function toggleLoginLanguage() {
             const isChecked = document.getElementById('lang-toggle').checked;
             localStorage.setItem('lang', isChecked ? 'en' : 'es');
             location.reload();
         }
 
-        // Apply Translations if available
-        if (typeof t === 'function') {
-            document.querySelector('h1').textContent = t('Gold Rush Detailing');
-            document.getElementById('label-username').textContent = t('Username');
-            document.getElementById('label-password').textContent = t('Password');
-            document.getElementById('btn-login').textContent = t('Login');
-        }
+        // 3. Init State & Translations
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentLang = localStorage.getItem('lang') || 'es';
+            const toggle = document.getElementById('lang-toggle');
+            if(toggle) toggle.checked = (currentLang === 'en');
 
-        // 2. Direct Login Handler (Independent of external files)
-        async function handleLogin(e) {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const errorEl = document.getElementById('error-message');
-            const btn = document.getElementById('btn-login');
-
-            // Reset UI
-            errorEl.textContent = '';
-            btn.style.opacity = '0.7';
-            btn.textContent = 'Verifying...';
-
-            try {
-                // Adjust this URL if your API is on a different port/host
-                // Assuming relative path like standard setup
-                const API_URL = '/api'; 
-
-                const response = await fetch(`${API_URL}/admin/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    localStorage.setItem('token', data.token);
-                    window.location.href = 'dashboard.html';
-                } else {
-                    errorEl.textContent = data.error || 'Invalid credentials';
-                    btn.style.opacity = '1';
-                    btn.textContent = typeof t === 'function' ? t('Login') : 'Login';
-                }
-            } catch (err) {
-                console.error(err);
-                errorEl.textContent = 'Connection error. Is backend running?';
-                btn.style.opacity = '1';
-                btn.textContent = typeof t === 'function' ? t('Login') : 'Login';
+            if (typeof t === 'function') {
+                document.querySelector('h1').textContent = t('Gold Rush Detailing');
+                document.getElementById('label-username').textContent = t('Username');
+                document.getElementById('label-password').textContent = t('Password');
+                document.getElementById('btn-login').textContent = t('Login');
             }
-        }
-
-        // 3. Auto-Redirect
-        if(localStorage.getItem('token')) {
-            window.location.href = 'dashboard.html';
-        }
+        });
     </script>
 </body>
 </html>
