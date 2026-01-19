@@ -1,38 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <title>Admin Login - Gold Rush Detailing</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Specific positioning for the toggle on the login page */
+        .login-lang-wrapper {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            z-index: 10;
+        }
+    </style>
 </head>    
-<body>
+<body class="login-body">
+    
+    <div class="login-lang-wrapper">
+        <label class="lang-toggle">
+            <span>ES</span>
+            <input type="checkbox" id="lang-toggle" onchange="setLanguage(this.checked ? 'en' : 'es')">
+            <span>EN</span>
+        </label>
+    </div>
+
     <div class="login-container">
-        <h1>Gold Rush Detailing</h1>
-        <h2>Admin Login</h2>
+        <div class="login-header">
+            <h1>Gold Rush Detailing</h1>
+            <h2 id="login-subtitle">Admin Access Portal</h2>
+        </div>
+        
         <form id="login-form">
             <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
+                <label for="username" id="label-username">Username</label>
+                <input type="text" id="username" name="username" required autocomplete="username">
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+                <label for="password" id="label-password">Password</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password">
             </div>
-            <button type="submit">Login</button>
-            <p id="error-message" class="error"></p>
+            <button type="submit" class="btn btn-primary" id="btn-login">Enter Dashboard</button>
+            <p id="error-message" class="error" style="margin-top: 20px; font-size: 13px; color: var(--error);"></p>
         </form>
     </div>
+
     <script src="js/translations.js"></script>
-    <script>
-        // Apply translations to login page
-        document.querySelector('h1').textContent = t('Gold Rush Detailing');
-        document.querySelector('h2').textContent = t('Admin Login');
-        document.querySelector('label[for="username"]').textContent = t('Username');
-        document.querySelector('label[for="password"]').textContent = t('Password');
-        document.querySelector('button[type="submit"]').textContent = t('Login');
-    </script>
     <script src="js/auth.js"></script>
+    <script>
+        // 1. Redirect if already logged in
+        if(localStorage.getItem('token')) window.location.href = 'dashboard.html';
+
+        // 2. Sync Toggle State with Current Language
+        // translations.js sets 'currentLang' from localStorage (defaults to 'es')
+        const toggle = document.getElementById('lang-toggle');
+        if (toggle) {
+            toggle.checked = currentLang === 'en';
+        }
+
+        // 3. Apply Translations
+        // We use the t() function from translations.js
+        document.querySelector('h1').textContent = t('Gold Rush Detailing');
+        document.getElementById('login-subtitle').textContent = t('Admin Login');
+        document.getElementById('label-username').textContent = t('Username');
+        document.getElementById('label-password').textContent = t('Password');
+        document.getElementById('btn-login').textContent = t('Login');
+    </script>
 </body>
 </html>

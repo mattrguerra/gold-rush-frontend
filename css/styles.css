@@ -1,120 +1,132 @@
 /* ===============================================
-   Gold Rush Detailing - Official Admin Theme
-   Based on Brand Guide v1.0
+   Gold Rush Detailing - Premium Admin Suite
+   Design Standard: Luxury, Depth, Precision
    =============================================== */
 
-/* 1. Typography Imports (From Brand Guide) */
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Expanded:wght@700&family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap');
+/* 1. Typography & Imports */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap');
 
-/* 2. CSS Variables (From Brand Guide) */
 :root {
-    /* Primary Colors */
+    /* Brand Colors */
     --gold: #D4AF37;
-    --gold-light: #e5c349;
-    --gold-glow: rgba(212, 175, 55, 0.15);
+    --gold-light: #F4CF57;
+    --gold-dim: rgba(212, 175, 55, 0.1);
+    --gold-glow: 0 0 20px rgba(212, 175, 55, 0.15);
     
-    --dark: #0a0a0a;          /* Primary background */
-    --dark-lighter: #1a1a1a;  /* Cards */
-    --border: #333333;
-    --border-light: #222222;
+    --dark: #0a0a0a;          /* Deepest Black */
+    --dark-card: #141414;     /* Card Background */
+    --dark-border: #222222;   /* Subtle Border */
     
-    /* Secondary Colors */
-    --white: #FFFFFF;
-    --text-light: #999999;
+    --text-white: #ffffff;
+    --text-gray: #a3a3a3;     /* Elegant Muted Text */
     
-    /* Functional */
     --success: #22c55e;
     --error: #ef4444;
-    --info: #3b82f6;
-
-    /* Dimensions */
-    --sidebar-width: 280px; /* Increased for better whitespace */
-    --navbar-height: 80px;  /* Matches brand guide desktop nav height */
+    --warning: #f59e0b;
+    
+    /* Layout */
+    --sidebar-width: 280px;
+    --navbar-height: 80px;
+    --card-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
-/* 3. Global Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* 2. Global Reset & Base */
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     background-color: var(--dark);
-    color: var(--white);
+    color: var(--text-white);
     font-family: 'Montserrat', sans-serif;
     font-size: 14px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4 {
     font-family: 'Playfair Display', serif;
-    font-weight: 700;
+    font-weight: 400;
 }
 
 /* ===============================================
-   Navigation Bar
+   Login Page (The Portal)
+   =============================================== */
+.login-body {
+    background: radial-gradient(circle at top right, #1a1a1a 0%, #0a0a0a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 420px;
+    background: rgba(20, 20, 20, 0.95);
+    border: 1px solid var(--dark-border);
+    padding: 60px 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    text-align: center;
+    position: relative;
+    backdrop-filter: blur(10px);
+}
+
+.login-container::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.login-header h1 {
+    font-size: 32px;
+    color: var(--gold);
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+.login-header h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--text-gray);
+    margin-bottom: 40px;
+}
+
+/* ===============================================
+   Navigation (Glassmorphism)
    =============================================== */
 .navbar {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     height: var(--navbar-height);
-    background: rgba(10, 10, 10, 0.95); /* var(--dark) with opacity */
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border);
+    background: rgba(10, 10, 10, 0.9);
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid var(--dark-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 40px; /* Desktop padding from guide */
+    padding: 0 40px;
     z-index: 100;
 }
 
 .navbar h1 {
     color: var(--gold);
     font-size: 24px;
-    letter-spacing: 0.5px;
 }
 
-.header-controls {
-    display: flex;
-    align-items: center;
-    gap: 25px;
-}
+.header-controls { display: flex; align-items: center; gap: 30px; }
 
-/* Language Toggle styling */
-.lang-toggle {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--text-light);
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.lang-toggle input {
-    width: auto;
-    margin: 0;
-}
-
-/* Logout Button */
 #logout-btn {
     background: transparent;
-    border: 1px solid var(--border);
-    color: var(--white);
-    padding: 10px 25px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 12px;
+    border: 1px solid var(--dark-border);
+    color: var(--text-gray);
+    padding: 10px 20px;
+    font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    letter-spacing: 2px;
+    transition: all 0.3s;
 }
 
 #logout-btn:hover {
@@ -123,388 +135,256 @@ h1, h2, h3 {
 }
 
 /* ===============================================
-   Sidebar
+   Sidebar (Control Center)
    =============================================== */
 .sidebar {
     position: fixed;
-    top: var(--navbar-height);
-    left: 0;
-    bottom: 0;
+    top: var(--navbar-height); left: 0; bottom: 0;
     width: var(--sidebar-width);
-    background: var(--dark-lighter); /* #1a1a1a */
-    border-right: 1px solid var(--border);
-    padding-top: 30px;
+    background: var(--dark-card);
+    border-right: 1px solid var(--dark-border);
+    padding-top: 40px;
     z-index: 90;
 }
 
-.sidebar-toggle { display: none; }
-
 .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 18px 30px;
-    color: var(--text-light);
+    display: flex; align-items: center; gap: 18px;
+    padding: 18px 35px;
+    color: var(--text-gray);
     text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     border-left: 3px solid transparent;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
 }
 
 .nav-item:hover {
-    background: rgba(255, 255, 255, 0.03);
-    color: var(--white);
+    color: var(--text-white);
+    background: rgba(255,255,255,0.02);
 }
 
-/* Active State - Matches Brand Guide Gold Accent */
 .nav-item.active {
-    background: linear-gradient(90deg, var(--gold-glow) 0%, transparent 100%);
     border-left-color: var(--gold);
     color: var(--gold);
+    background: linear-gradient(90deg, var(--gold-dim) 0%, transparent 100%);
 }
 
 .nav-badge {
     margin-left: auto;
     background: var(--gold);
-    color: var(--dark);
+    color: #000;
     font-size: 10px;
     font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 4px;
+    padding: 2px 6px;
+    border-radius: 2px;
 }
 
 /* ===============================================
-   Main Dashboard Area
+   Dashboard Content
    =============================================== */
 .dashboard {
     margin-left: var(--sidebar-width);
     margin-top: var(--navbar-height);
-    padding: 50px; /* XL Spacing from guide */
+    padding: 60px;
     min-height: calc(100vh - var(--navbar-height));
 }
 
-.content-section {
-    display: none;
-    animation: fadeIn 0.4s ease;
-}
-
-.content-section.active {
-    display: block;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
 .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px; /* lg spacing */
-    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 50px;
     padding-bottom: 20px;
+    border-bottom: 1px solid var(--dark-border);
 }
 
 .section-header h2 {
-    font-size: 36px;
-    color: var(--white);
+    font-size: 42px;
+    color: var(--text-white);
 }
 
 /* ===============================================
-   Cards (Brand Guide Implementation)
+   Premium Cards (Stats & Content)
    =============================================== */
 .stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 25px;
-    margin-bottom: 50px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-bottom: 60px;
 }
 
 .stat-card {
-    background: var(--dark-lighter); /* #1a1a1a */
-    border: 1px solid var(--border);
-    padding: 30px;
-    transition: all 0.3s ease;
-    /* Box shadow from guide */
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); 
+    background: var(--dark-card);
+    padding: 40px 30px;
+    border: 1px solid var(--dark-border);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
 }
 
 .stat-card:hover {
     border-color: var(--gold);
     transform: translateY(-5px);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--card-shadow);
 }
 
 .stat-card h3 {
     font-family: 'Montserrat', sans-serif;
-    color: var(--text-light);
+    color: var(--text-gray);
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 2px;
-    font-weight: 600;
     margin-bottom: 15px;
 }
 
 .stat-card p {
     font-family: 'Playfair Display', serif;
-    font-size: 42px;
+    font-size: 48px;
     color: var(--gold);
-    font-weight: 700;
     line-height: 1;
+    text-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
 }
 
-/* Content Cards (Agenda, Settings, etc) */
 .dashboard-card, .settings-card, .availability-card, .service-card {
-    background: var(--dark-lighter);
-    border: 1px solid var(--border);
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
     margin-bottom: 30px;
-    padding: 0; /* Header and content have their own padding */
 }
 
 .card-header {
-    padding: 25px 30px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 25px 35px;
+    border-bottom: 1px solid var(--dark-border);
+    display: flex; justify-content: space-between; align-items: center;
 }
 
-.card-header h3 {
-    font-size: 20px;
-    color: var(--white);
-}
-
-.card-link {
-    color: var(--gold);
-    font-family: 'Montserrat', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    text-decoration: none;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.card-content {
-    padding: 30px;
-}
+.card-header h3 { font-size: 20px; color: var(--text-white); }
+.card-content { padding: 35px; }
 
 /* ===============================================
-   Booking Lists & Tables
+   Booking Lists (Data Grids)
    =============================================== */
-.bookings-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
 .booking-card {
-    background: var(--dark-lighter);
-    border: 1px solid var(--border);
-    padding: 25px 30px;
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    padding: 30px 35px;
     display: grid;
-    grid-template-columns: 2fr 2fr 1.5fr 1fr;
+    grid-template-columns: 2fr 2fr 1.5fr auto;
     gap: 20px;
     align-items: center;
-    transition: all 0.3s ease;
+    margin-bottom: 15px;
+    transition: all 0.3s;
+    cursor: pointer;
 }
 
 .booking-card:hover {
     border-color: var(--gold);
+    background: rgba(255,255,255,0.01);
     transform: translateX(5px);
 }
 
 .booking-card h4 {
-    font-family: 'Playfair Display', serif;
     font-size: 18px;
-    color: var(--white);
+    color: var(--text-white);
     margin-bottom: 5px;
 }
 
-.booking-card p, .booking-card .datetime .time {
-    color: var(--text-light);
-    font-size: 13px;
-}
+.booking-card p { color: var(--text-gray); font-size: 13px; }
+.booking-card strong { color: var(--gold); font-weight: 400; font-family: 'Playfair Display', serif; }
 
-.booking-card strong {
-    color: var(--gold);
-    display: block;
-    margin-bottom: 5px;
-}
-
-/* Tables */
-.customers-table-container {
-    background: var(--dark-lighter);
-    border: 1px solid var(--border);
-}
-
-.data-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.data-table th {
-    background: #111;
-    color: var(--text-light);
-    font-size: 12px;
+/* Status Badges */
+.status-badge {
+    padding: 6px 12px;
+    font-size: 10px;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    padding: 20px 25px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
 }
-
-.data-table td {
-    padding: 20px 25px;
-    border-bottom: 1px solid var(--border-light);
-    color: var(--white);
-}
+.status-pending { color: var(--warning); border: 1px solid var(--warning); background: rgba(245, 158, 11, 0.05); }
+.status-confirmed { color: var(--success); border: 1px solid var(--success); background: rgba(34, 197, 94, 0.05); }
+.status-completed { color: var(--gold); border: 1px solid var(--gold); background: rgba(212, 175, 55, 0.05); }
+.status-cancelled { color: var(--error); border: 1px solid var(--error); background: rgba(239, 68, 68, 0.05); }
 
 /* ===============================================
-   Buttons & Forms (From Brand Guide)
+   Forms & Inputs
    =============================================== */
-.btn-primary {
-    background: var(--gold);
-    color: var(--dark);
-    padding: 15px 35px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-    background: var(--gold-light);
-    transform: translateY(-2px);
-}
-
-.btn-secondary {
-    background: transparent;
-    color: var(--white);
-    padding: 12px 25px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-secondary:hover {
-    border-color: var(--gold);
-    color: var(--gold);
-}
-
-.form-group {
-    margin-bottom: 25px;
-}
+.form-group { margin-bottom: 25px; text-align: left; }
 
 label {
     display: block;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--text-light);
-    margin-bottom: 10px;
+    color: var(--text-gray);
+    margin-bottom: 12px;
 }
 
 input, select, textarea {
     width: 100%;
-    padding: 15px 18px;
+    padding: 16px 20px;
     background: var(--dark);
-    border: 1px solid var(--border);
-    color: var(--white);
+    border: 1px solid var(--dark-border);
+    color: var(--text-white);
     font-family: 'Montserrat', sans-serif;
     font-size: 14px;
-    transition: border-color 0.3s;
+    transition: all 0.3s;
 }
 
 input:focus, select:focus {
     outline: none;
     border-color: var(--gold);
+    box-shadow: var(--gold-glow);
 }
 
-/* ===============================================
-   Status Badges & Filters
-   =============================================== */
-.status-badge {
-    padding: 5px 10px;
-    font-size: 11px;
+.btn-primary {
+    background: var(--gold);
+    color: #000;
+    padding: 16px 32px;
+    font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    border-radius: 2px;
-}
-
-.status-pending { color: var(--warning); background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); }
-.status-confirmed { color: var(--success); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
-.status-completed { color: var(--info); background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); }
-.status-cancelled { color: var(--error); background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); }
-
-.filters {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.filter-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-light);
-    padding: 10px 20px;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
+    border: none;
     cursor: pointer;
     transition: all 0.3s;
+    width: 100%; /* Default to full width in forms */
 }
 
-.filter-btn.active {
-    background: var(--gold);
-    color: var(--dark);
-    border-color: var(--gold);
-    font-weight: 700;
+.btn-primary:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
 }
 
 /* ===============================================
-   Responsive
+   Utilities & Mobile
    =============================================== */
-@media (max-width: 992px) {
-    .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+.content-section { display: none; animation: fadeUp 0.5s ease; }
+.content-section.active { display: block; }
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
     .sidebar.active { transform: translateX(0); }
-    
-    .dashboard { margin-left: 0; padding: 20px; }
-    
+    .dashboard { margin-left: 0; padding: 25px; }
+    .navbar { padding: 0 20px; }
+    .stats { grid-template-columns: 1fr; }
+    .booking-card { grid-template-columns: 1fr; }
+    .btn-primary { width: 100%; }
+}
+
+.sidebar-toggle { display: none; }
+@media (max-width: 768px) {
     .sidebar-toggle {
-        display: block;
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 50px;
-        height: 50px;
-        background: var(--gold);
-        color: var(--dark);
-        border: none;
-        border-radius: 50%;
-        font-size: 24px;
-        z-index: 200;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-    }
-    
-    .booking-card {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-    
-    .stats {
-        grid-template-columns: 1fr 1fr;
+        display: flex; align-items: center; justify-content: center;
+        position: fixed; bottom: 30px; right: 30px;
+        width: 60px; height: 60px;
+        background: var(--gold); color: #000;
+        border: none; border-radius: 50%;
+        font-size: 24px; z-index: 200;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 }
