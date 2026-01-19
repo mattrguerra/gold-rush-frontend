@@ -3,124 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold Rush | Admin</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Gold Rush | Dashboard</title>
+    <link rel="stylesheet" href="css/admin-theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div class="app-shell">
-    
     <aside class="sidebar">
-        <div class="brand">
-            <img src="images/logo.svg" alt="Gold Rush" class="brand-logo">
-        </div>
+        <div class="brand brand-font">Gold Rush</div>
         
-        <nav class="nav-menu">
-            <a href="#dashboard" class="nav-item active">
-                <span class="icon">📊</span> <span data-i18n="nav_dashboard">Panel</span>
-            </a>
-            <a href="#bookings" class="nav-item">
-                <span class="icon">📅</span> <span data-i18n="nav_bookings">Reservas</span>
-            </a>
-            <a href="#services" class="nav-item">
-                <span class="icon">✨</span> <span data-i18n="nav_services">Servicios</span>
-            </a>
-            <a href="#customers" class="nav-item">
-                <span class="icon">👥</span> <span data-i18n="nav_clients">Clientes</span>
-            </a>
-            <a href="#availability" class="nav-item">
-                <span class="icon">🗓️</span> <span data-i18n="nav_availability">Disponibilidad</span>
-            </a>
-            <a href="#settings" class="nav-item">
-                <span class="icon">⚙️</span> <span data-i18n="nav_settings">Configuración</span>
-            </a>
+        <nav>
+            <div class="nav-item active" onclick="switchView('dashboard')">
+                <i class="fa-solid fa-table-columns"></i> Panel Principal
+            </div>
+            <div class="nav-item" onclick="switchView('bookings')">
+                <i class="fa-regular fa-calendar"></i> Reservas
+            </div>
+            <div class="nav-item" onclick="switchView('clients')">
+                <i class="fa-solid fa-users"></i> Clientes
+            </div>
+            <div class="nav-item" onclick="switchView('analytics')">
+                <i class="fa-solid fa-chart-line"></i> Analítica
+            </div>
         </nav>
 
-        <div class="sidebar-footer">
-            <div class="user-card">
-                <div class="user-avatar">A</div>
-                <div class="user-info">
-                    <span class="user-name">Admin</span>
-                    <span class="user-role">Manager</span>
-                </div>
-            </div>
-            
-            <div class="toggle-wrapper">
-                <span class="toggle-label">ES / EN</span>
-                <label class="switch">
-                    <input type="checkbox" id="lang-toggle">
-                    <span class="slider round"></span>
-                </label>
-            </div>
+        <div class="nav-item logout" onclick="window.location.href='login.html'">
+            <i class="fa-solid fa-power-off"></i> Cerrar Sesión
         </div>
     </aside>
 
-    <main class="content-area">
-        
-        <header class="top-bar">
-            <div class="page-titles">
-                <h1 id="page-title" data-i18n="header_dashboard">Panel de Control</h1>
-                <p id="current-date">Cargando fecha...</p>
+    <main class="main-content">
+        <header class="header">
+            <h2>Buenas Noches, <span>Admin</span></h2>
+            <div class="actions">
+                <i class="fa-solid fa-bell" style="margin-right: 20px; color: #888; cursor: pointer;"></i>
+                <div class="profile-pic" style="display:inline-block; width:35px; height:35px; background:#f4c430; border-radius:50%; vertical-align: middle; border: 2px solid #222;"></div>
             </div>
-            <button onclick="logout()" class="btn-ghost" data-i18n="nav_logout">Cerrar Sesión</button>
         </header>
 
-        <section id="view-dashboard" class="view-section">
-            <div class="stats-row">
-                <div class="card stat-card">
-                    <div class="stat-label" data-i18n="stat_today">Citas de Hoy</div>
-                    <div class="stat-number" id="val-today">0</div>
-                </div>
-                <div class="card stat-card">
-                    <div class="stat-label" data-i18n="stat_pending">Pendientes</div>
-                    <div class="stat-number" id="val-pending">0</div>
-                </div>
-                <div class="card stat-card">
-                    <div class="stat-label" data-i18n="stat_week">Esta Semana</div>
-                    <div class="stat-number" id="val-week">0</div>
-                </div>
-                <div class="card stat-card">
-                    <div class="stat-label" data-i18n="stat_revenue">Ingresos</div>
-                    <div class="stat-number gold-text" id="val-revenue">$0</div>
-                </div>
+        <div class="kpi-grid">
+            <div class="card">
+                <div style="color:#888; font-size:0.9rem;">INGRESOS TOTALES</div>
+                <div class="kpi-value">USD $24,500</div>
+                <div class="kpi-sub"><i class="fa-solid fa-arrow-trend-up"></i> +12.5% vs last month</div>
             </div>
-
-            <div class="grid-split">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 data-i18n="lbl_today_agenda">Agenda del Día</h3>
-                    </div>
-                    <div class="card-body" id="today-list">
-                        </div>
-                </div>
+            <div class="card">
+                <div style="color:#888; font-size:0.9rem;">TRABAJOS ACTIVOS</div>
+                <div class="kpi-value">12</div>
+                <div class="kpi-sub">programados para hoy</div>
             </div>
-        </section>
-
-        <section id="view-bookings" class="view-section" style="display:none;">
-            <div class="card table-card">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th data-i18n="lbl_customer">Cliente</th>
-                            <th data-i18n="lbl_service">Servicio</th>
-                            <th data-i18n="lbl_date">Fecha</th>
-                            <th data-i18n="lbl_status">Estado</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="bookings-table-body">
-                        </tbody>
-                </table>
+            <div class="card">
+                <div style="color:#888; font-size:0.9rem;">TICKET PROMEDIO</div>
+                <div class="kpi-value">USD 450</div>
+                <div class="kpi-sub" style="color:#4caf50;">+4.2%</div>
             </div>
-        </section>
+        </div>
 
-        <section id="view-services" class="view-section" style="display:none;"><h2 style="color:white;">Services Coming Soon</h2></section>
-        <section id="view-customers" class="view-section" style="display:none;"><h2 style="color:white;">Customers Coming Soon</h2></section>
-        
+        <div class="card">
+            <div class="table-header">
+                <h3>Reservas Recientes</h3>
+                <button class="gold-btn-small">+ Nueva Reserva</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>CLIENTE</th>
+                        <th>VEHÍCULO</th>
+                        <th>SERVICIO</th>
+                        <th>FECHA</th>
+                        <th>ESTADO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr onclick="openModal('bookingModal')">
+                        <td><strong>Roberto Rodriguez</strong></td>
+                        <td>Porsche 911 GT3</td>
+                        <td>Recubrimiento Cerámico</td>
+                        <td>2023-10-24</td>
+                        <td class="status-confirmed">Confirmado</td>
+                    </tr>
+                    <tr onclick="openModal('bookingModal')">
+                        <td><strong>Sarah Miller</strong></td>
+                        <td>Range Rover Sport</td>
+                        <td>Detallado Completo</td>
+                        <td>2023-10-24</td>
+                        <td class="status-pending">Pendiente</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </main>
-</div>
 
-<script src="js/app.js"></script>
+    <div id="bookingModal" class="modal-overlay">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                    <h3 style="margin-bottom:0.5rem; color:#888;">BOOKING #101</h3>
+                    <h2 class="brand-font" style="margin-bottom:1.5rem;">Roberto Rodriguez</h2>
+                </div>
+                <button onclick="closeModal('bookingModal')" style="background:none; border:none; color:#666; cursor:pointer; font-size:1.2rem;">&times;</button>
+            </div>
+            
+            <label style="color:#888; font-size:0.8rem; display:block; margin-bottom:0.5rem;">NOTES</label>
+            <input type="text" value="Ceramic refresh" style="width:100%; padding:12px; background:#222; border:1px solid #444; color:white; margin-bottom:1.5rem; border-radius:6px;">
+            
+            <div style="display:flex; gap:1rem;">
+                <button class="btn-primary" onclick="closeModal('bookingModal')">Save Changes</button>
+                <button style="background:transparent; border:1px solid #444; color:#888; padding:1rem; border-radius:6px; cursor:pointer;" onclick="closeModal('bookingModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin-app.js"></script>
 </body>
 </html>
