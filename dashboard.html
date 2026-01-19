@@ -3,254 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, nofollow">
-    <title>Executive Dashboard | Gold Rush Detailing</title>
+    <title>Gold Rush | Admin</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar">
-        <h1>Gold Rush Detailing</h1>
-        <div class="header-controls">
-            <label class="lang-toggle">
-                <span>ES</span>
-                <input type="checkbox" id="lang-toggle" onchange="setLanguage(this.checked ? 'en' : 'es')">
-                <span>EN</span>
-            </label>
-            <button id="logout-btn">Cerrar Sesión</button>
-        </div>
-    </nav>
 
-    <aside class="sidebar" id="sidebar">
-        <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
-        <nav class="sidebar-nav">
-            <a href="#dashboard" class="nav-item active" data-section="dashboard">
-                <span class="nav-icon">📊</span>
-                <span class="nav-label">Panel</span>
-            </a>
-            <a href="#bookings" class="nav-item" data-section="bookings">
-                <span class="nav-icon">📅</span>
-                <span class="nav-label">Reservas</span>
-                <span class="nav-badge" id="pending-badge">0</span>
-            </a>
-            <a href="#services" class="nav-item" data-section="services">
-                <span class="nav-icon">🚗</span>
-                <span class="nav-label">Servicios</span>
-            </a>
-            <a href="#customers" class="nav-item" data-section="customers">
-                <span class="nav-icon">👥</span>
-                <span class="nav-label">Clientes</span>
-            </a>
-            <a href="#availability" class="nav-item" data-section="availability">
-                <span class="nav-icon">🗓️</span>
-                <span class="nav-label">Disponibilidad</span>
-            </a>
-            <a href="#settings" class="nav-item" data-section="settings">
-                <span class="nav-icon">⚙️</span>
-                <span class="nav-label">Configuración</span>
-            </a>
-        </nav>
+<div class="app-layout">
+    
+    <aside class="sidebar">
+        <div>
+            <div class="brand">
+                <h1>GOLD RUSH</h1>
+            </div>
+            
+            <nav class="nav-group">
+                <a href="#" class="nav-item active" onclick="switchView('dashboard', this)">
+                    <span>📊</span> Dashboard
+                </a>
+                <a href="#" class="nav-item" onclick="switchView('bookings', this)">
+                    <span>📅</span> Bookings
+                </a>
+                <a href="#" class="nav-item" onclick="switchView('services', this)">
+                    <span>✨</span> Services
+                </a>
+                <a href="#" class="nav-item" onclick="switchView('customers', this)">
+                    <span>👥</span> Clients
+                </a>
+                <a href="#" class="nav-item" onclick="switchView('availability', this)">
+                    <span>🗓️</span> Availability
+                </a>
+                <a href="#" class="nav-item" onclick="switchView('settings', this)">
+                    <span>⚙️</span> Settings
+                </a>
+            </nav>
+        </div>
+
+        <div class="user-profile">
+            <div class="avatar">A</div>
+            <div style="flex:1;">
+                <div style="font-size:12px; font-weight:600;">Admin</div>
+                <div style="font-size:10px; color:var(--text-secondary);">Online</div>
+            </div>
+            
+            <label class="ios-toggle" title="Switch Language">
+                <input type="checkbox" id="lang-toggle" onchange="toggleLanguage()">
+                <div class="switch"></div>
+            </label>
+        </div>
     </aside>
 
-    <main class="dashboard">
+    <main class="main-content">
         
-        <section class="content-section active" id="section-dashboard">
-            <div class="section-header">
-                <h2>Panel</h2>
-                <div style="font-size: 14px; color: var(--text-gray); font-family: 'Montserrat', sans-serif;" id="current-date"></div>
+        <div class="header-bar">
+            <div class="page-title">
+                <h2 id="page-header-title">Dashboard</h2>
+                <p id="current-date">Sunday, January 18</p>
             </div>
+            <button class="btn btn-ghost" id="logout-btn">Log Out</button>
+        </div>
 
-            <div class="stats">
-                <div class="stat-card">
-                    <h3>Citas de Hoy</h3>
-                    <p id="today-count">0</p>
+        <div id="view-dashboard" class="view-section active">
+            <div class="stats-grid">
+                <div class="glass-panel stat-card">
+                    <div class="stat-label">Today</div>
+                    <div class="stat-value" id="today-count">0</div>
                 </div>
-                <div class="stat-card">
-                    <h3>Pendientes</h3>
-                    <p id="pending-count">0</p>
+                <div class="glass-panel stat-card">
+                    <div class="stat-label">Pending</div>
+                    <div class="stat-value" id="pending-count">0</div>
                 </div>
-                <div class="stat-card">
-                    <h3>Esta Semana</h3>
-                    <p id="week-count">0</p>
+                <div class="glass-panel stat-card">
+                    <div class="stat-label">This Week</div>
+                    <div class="stat-value" id="week-count">0</div>
                 </div>
-                <div class="stat-card">
-                    <h3>Ingresos</h3>
-                    <p id="revenue-count">$0</p>
-                </div>
-            </div>
-
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h3>Agenda de Hoy</h3>
-                    <a href="#bookings" class="card-link" onclick="showSection('bookings')">Ver Todas →</a>
-                </div>
-                <div class="card-content" id="today-schedule">
-                    <div class="loading">Cargando...</div>
+                <div class="glass-panel stat-card">
+                    <div class="stat-label">Revenue</div>
+                    <div class="stat-value" id="revenue-count">$0</div>
                 </div>
             </div>
 
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h3>Acciones Pendientes</h3>
+            <div class="glass-panel table-container">
+                <div style="padding: 20px 24px; border-bottom: 1px solid var(--glass-border);">
+                    <h3 style="font-size:16px;">Today's Agenda</h3>
                 </div>
-                <div class="card-content" id="pending-actions">
-                    <div class="loading">Cargando...</div>
+                <div id="today-schedule"></div>
+            </div>
+        </div>
+
+        <div id="view-bookings" class="view-section">
+            <div class="glass-panel table-container">
+                <div style="padding: 20px; display:flex; gap:10px;">
+                    <button class="btn btn-primary">All</button>
+                    <button class="btn btn-ghost">Pending</button>
+                    <button class="btn btn-ghost">Confirmed</button>
                 </div>
+                <div id="bookings-list">
+                    </div>
             </div>
-        </section>
+        </div>
 
-        <section class="content-section" id="section-bookings">
-            <div class="section-header">
-                <h2>Reservas</h2>
-                <div class="filters">
-                    <button class="filter-btn active" data-filter="all">Todas</button>
-                    <button class="filter-btn" data-filter="pending">Pendiente</button>
-                    <button class="filter-btn" data-filter="confirmed">Confirmada</button>
-                    <button class="filter-btn" data-filter="completed">Completada</button>
-                    <button class="filter-btn" data-filter="cancelled">Cancelada</button>
-                    <label class="toggle-label" style="margin-left: 20px;">
-                        <input type="checkbox" id="show-past-toggle">
-                        <span>Pasadas</span>
-                    </label>
+        <div id="view-services" class="view-section">
+            <div class="glass-panel table-container">
+                <div style="padding: 20px; text-align:right;">
+                    <button class="btn btn-primary">+ Add Service</button>
                 </div>
+                <div id="services-grid" style="padding: 20px;"></div>
             </div>
-            <div id="bookings-list" class="bookings-list">
-                <div class="loading">Cargando reservas...</div>
-            </div>
-        </section>
+        </div>
 
-        <section class="content-section" id="section-services">
-            <div class="section-header">
-                <h2>Servicios</h2>
-                <button class="btn btn-primary" onclick="openAddServiceModal()" style="width: auto;">+ Agregar</button>
-            </div>
-            <div id="services-grid" class="services-grid">
-                <div class="loading">Cargando servicios...</div>
-            </div>
-        </section>
-
-        <section class="content-section" id="section-customers">
-            <div class="section-header">
-                <h2>Clientes</h2>
-                <input type="search" id="customer-search" placeholder="Buscar clientes..." style="max-width: 300px;">
-            </div>
-            <div class="customers-table-container">
+        <div id="view-customers" class="view-section">
+             <div class="glass-panel table-container">
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Nombre</th>
-                            <th>Correo</th>
-                            <th>Teléfono</th>
-                            <th>Reservas</th>
-                            <th>Última Visita</th>
-                            <th>Acciones</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>History</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody id="customers-list">
-                        <tr><td colspan="6" class="loading">Cargando clientes...</td></tr>
-                    </tbody>
+                    <tbody id="customers-list"></tbody>
                 </table>
-            </div>
-        </section>
+             </div>
+        </div>
 
-        <section class="content-section" id="section-availability">
-            <div class="section-header">
-                <h2>Disponibilidad</h2>
+        <div id="view-settings" class="view-section">
+            <div class="glass-panel" style="padding: 30px; max-width: 500px;">
+                <h3 style="margin-bottom: 20px;">Business Info</h3>
+                <form id="business-info-form" style="display:flex; flex-direction:column; gap:15px;">
+                    <input type="text" value="Gold Rush Detailing" disabled style="background: rgba(255,255,255,0.05); border:1px solid var(--glass-border); padding:12px; color:white; border-radius:8px;">
+                    <input type="tel" value="(832) 330-2403" style="background: rgba(255,255,255,0.05); border:1px solid var(--glass-border); padding:12px; color:white; border-radius:8px;">
+                    <button class="btn btn-primary">Save Changes</button>
+                </form>
             </div>
-            <div class="stats" style="grid-template-columns: 1fr 1fr;">
-                <div class="availability-card" style="margin: 0;">
-                    <div class="card-header"><h3>Bloquear Fechas</h3></div>
-                    <div class="card-content">
-                        <div class="form-group">
-                            <label>Seleccionar Fecha</label>
-                            <input type="date" id="block-date-input">
-                        </div>
-                        <button class="btn btn-primary" onclick="blockDate()">Bloquear</button>
-                        <div id="blocked-dates-list" style="margin-top: 20px;">
-                            <div class="loading">Cargando...</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="availability-card" style="margin: 0;">
-                    <div class="card-header"><h3>Horario de Atención</h3></div>
-                    <div class="card-content" id="business-hours">
-                        <div class="loading">Cargando...</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="content-section" id="section-settings">
-            <div class="section-header">
-                <h2>Configuración</h2>
-            </div>
-            <div class="stats" style="grid-template-columns: 1fr 1fr;">
-                <div class="settings-card" style="margin: 0;">
-                    <div class="card-header"><h3>Información del Negocio</h3></div>
-                    <div class="card-content">
-                        <form id="business-info-form">
-                            <div class="form-group">
-                                <label>Nombre</label>
-                                <input type="text" value="Gold Rush Detailing" disabled style="opacity: 0.7;">
-                            </div>
-                            <div class="form-group">
-                                <label>Teléfono</label>
-                                <input type="tel" id="business-phone" value="(832) 330-2403">
-                            </div>
-                            <div class="form-group">
-                                <label>Correo</label>
-                                <input type="email" id="business-email" value="info@goldrushdetailing.com">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Guardar</button>
-                        </form>
-                    </div>
-                </div>
-                
-                <div class="settings-card" style="margin: 0;">
-                    <div class="card-header"><h3>Seguridad</h3></div>
-                    <div class="card-content">
-                        <form id="password-form">
-                            <div class="form-group">
-                                <label>Contraseña Actual</label>
-                                <input type="password" id="current-password" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Nueva Contraseña</label>
-                                <input type="password" id="new-password" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Confirmar</label>
-                                <input type="password" id="confirm-password" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Actualizar</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
+        </div>
 
     </main>
+</div>
 
-    <div class="modal" id="booking-modal">
-        <div class="modal-overlay" onclick="closeModal('booking-modal')"></div>
-        <div class="modal-content" style="background: var(--dark); border: 1px solid var(--gold); box-shadow: 0 20px 60px rgba(0,0,0,0.8);">
-            <div class="modal-header">
-                <h3 style="color: var(--gold);">Detalles</h3>
-                <button class="modal-close" onclick="closeModal('booking-modal')">×</button>
-            </div>
-            <div class="modal-body" id="booking-modal-body"></div>
-            <div class="modal-footer" id="booking-modal-footer"></div>
-        </div>
+<div id="booking-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:999; backdrop-filter:blur(5px); align-items:center; justify-content:center;">
+    <div class="glass-panel" style="width:400px; padding:30px;">
+        <h3>Details</h3>
+        <div id="booking-modal-body" style="margin: 20px 0;"></div>
+        <button class="btn btn-ghost" onclick="closeModal('booking-modal')">Close</button>
     </div>
+</div>
 
-    <script src="js/translations.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/app.js"></script>
-    <script>
-        document.getElementById('current-date').textContent = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    </script>
+<script src="js/translations.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
