@@ -3,57 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Gold Rush Detailing</title>
+    <title>Login | Gold Rush</title>
     <link rel="stylesheet" href="css/styles.css">
     <style>
-        body { display: flex; align-items: center; justify-content: center; }
-        .input-group { margin-bottom: 20px; text-align: left; }
-        .input-label {
-            display: block; color: var(--text-secondary);
-            font-size: 11px; font-weight: 700; margin-bottom: 8px;
-            text-transform: uppercase; letter-spacing: 1px; margin-left: 4px;
+        body { display: flex; align-items: center; justify-content: center; background: #050505; }
+        .login-card { width: 100%; max-width: 400px; padding: 50px; text-align: center; }
+        input { 
+            width: 100%; padding: 16px; margin-bottom: 20px; 
+            background: #141414; border: 1px solid #333; color: white; 
+            border-radius: 8px; font-family: inherit; 
         }
-        .ios-input {
-            width: 100%; background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border); border-radius: 12px;
-            padding: 16px; color: var(--text-primary); font-size: 16px; 
-            outline: none; transition: all 0.3s;
+        input:focus { outline: none; border-color: #D4AF37; }
+        button { 
+            width: 100%; padding: 16px; background: #D4AF37; color: black; 
+            border: none; border-radius: 8px; font-weight: 700; cursor: pointer; 
+            text-transform: uppercase; letter-spacing: 1px;
         }
-        .ios-input:focus { background: rgba(255, 255, 255, 0.1); border-color: var(--gold); }
-        .lang-wrapper { position: absolute; top: 24px; right: 24px; z-index: 10; }
+        button:hover { background: #E5C349; }
+        .error { color: #ef4444; font-size: 13px; margin-top: 20px; min-height: 20px; }
     </style>
 </head>
 <body>
-    <div class="lang-wrapper">
-        <label class="ios-toggle" title="Switch Language">
-            <input type="checkbox" id="lang-toggle" onchange="toggleGlobalLanguage()">
-            <div class="switch"></div>
-        </label>
-    </div>
-
-    <div class="glass-panel" style="width: 100%; max-width: 400px; padding: 48px 40px; text-align: center; position: relative; overflow: hidden;">
-        <div style="margin-bottom: 40px; position:relative;">
-            <h1 style="font-size: 28px; color: var(--gold); letter-spacing: -0.5px; margin-bottom: 8px;" data-i18n="Gold Rush Detailing">GOLD RUSH</h1>
-            <p style="color: var(--text-secondary); font-size: 13px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase;" data-i18n="Admin Login">Admin Portal</p>
-        </div>
-
+    <div class="login-card">
+        <h1 style="color: #D4AF37; margin-bottom: 10px;">GOLD RUSH</h1>
+        <p style="color: #888; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 2px; font-size: 12px;">Admin Portal</p>
+        
         <form id="login-form">
-            <div class="input-group">
-                <label for="username" class="input-label" id="label-username" data-i18n="Username">Username</label>
-                <input type="text" id="username" name="username" class="ios-input" required autocomplete="username">
-            </div>
-            
-            <div class="input-group" style="margin-bottom: 30px;">
-                <label for="password" class="input-label" id="label-password" data-i18n="Password">Password</label>
-                <input type="password" id="password" name="password" class="ios-input" required autocomplete="current-password">
-            </div>
-
-            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 14px; border-radius: 14px;" id="btn-login" data-i18n="Login">Enter Dashboard</button>
-            <p id="error-message" style="color: var(--error); font-size: 13px; margin-top: 20px; min-height: 20px; font-weight: 500;"></p>
+            <input type="text" id="username" placeholder="USERNAME" required>
+            <input type="password" id="password" placeholder="PASSWORD" required>
+            <button type="submit" id="btn-login">Enter</button>
+            <div id="error-msg" class="error"></div>
         </form>
     </div>
 
-    <script src="js/translations.js"></script>
-    <script src="js/auth.js"></script>
+    <script>
+        const API = 'https://gold-rush-backend-production.up.railway.app/api';
+        
+        // Auto-redirect if token exists
+        if(localStorage.getItem('token')) window.location.href = 'dashboard.html';
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-login');
+            const err = document.getElementById('error-msg');
+            
+            btn.textContent = 'Verifying...';
+            btn.disabled = true;
+            err.textContent = '';
+
+            try {
+                const res = await fetch(`${API}/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: document.getElementById('username').value,
+                        password: document.getElementById('password').value
+                    })
+                });
+
+                const data = await res.json();
+                
+                if (res.ok) {
+                    localStorage.setItem('token', data.token);
+                    window.location.href = 'dashboard.html';
+                } else {
+                    throw new Error(data.error || 'Login failed');
+                }
+            } catch (error) {
+                err.textContent = error.message;
+                btn.textContent = 'Enter';
+                btn.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>
