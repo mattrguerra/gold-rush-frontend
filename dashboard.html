@@ -3,118 +3,439 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>Gold Rush | Dashboard</title>
-    <link rel="stylesheet" href="css/admin-theme.css">
+
+    <!-- Fonts (matching public site) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Admin Theme -->
+    <link rel="stylesheet" href="css/admin-theme.css">
 </head>
 <body>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
 
-    <aside class="sidebar">
-        <div class="brand brand-font">Gold Rush</div>
-        
-        <nav>
-            <div class="nav-item active" onclick="switchView('dashboard')">
-                <i class="fa-solid fa-table-columns"></i> Panel Principal
-            </div>
-            <div class="nav-item" onclick="switchView('bookings')">
-                <i class="fa-regular fa-calendar"></i> Reservas
-            </div>
-            <div class="nav-item" onclick="switchView('clients')">
-                <i class="fa-solid fa-users"></i> Clientes
-            </div>
-            <div class="nav-item" onclick="switchView('analytics')">
-                <i class="fa-solid fa-chart-line"></i> Analítica
-            </div>
-        </nav>
+    <!-- Dashboard Layout -->
+    <div class="dashboard-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar slide-in-left">
+            <div class="brand brand-font">Gold Rush</div>
 
-        <div class="nav-item logout" onclick="window.location.href='login.html'">
-            <i class="fa-solid fa-power-off"></i> Cerrar Sesión
-        </div>
-    </aside>
+            <nav>
+                <div class="nav-item active" onclick="switchView('dashboard')" data-view="dashboard">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span data-i18n="navDashboard">Panel Principal</span>
+                </div>
+                <div class="nav-item" onclick="switchView('bookings')" data-view="bookings">
+                    <i class="fa-regular fa-calendar-check"></i>
+                    <span data-i18n="navBookings">Reservas</span>
+                </div>
+                <div class="nav-item" onclick="switchView('clients')" data-view="clients">
+                    <i class="fa-solid fa-users"></i>
+                    <span data-i18n="navClients">Clientes</span>
+                </div>
+                <div class="nav-item" onclick="switchView('analytics')" data-view="analytics">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span data-i18n="navAnalytics">Analítica</span>
+                </div>
+                <div class="nav-item" onclick="switchView('settings')" data-view="settings">
+                    <i class="fa-solid fa-gear"></i>
+                    <span data-i18n="navSettings">Configuración</span>
+                </div>
+            </nav>
 
-    <main class="main-content">
-        <header class="header">
-            <h2>Buenas Noches, <span>Admin</span></h2>
-            <div class="actions">
-                <i class="fa-solid fa-bell" style="margin-right: 20px; color: #888; cursor: pointer;"></i>
-                <div class="profile-pic" style="display:inline-block; width:35px; height:35px; background:#f4c430; border-radius:50%; vertical-align: middle; border: 2px solid #222;"></div>
+            <div class="nav-item logout" onclick="handleLogout()">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span data-i18n="navLogout">Cerrar Sesión</span>
             </div>
-        </header>
+        </aside>
 
-        <div class="kpi-grid">
-            <div class="card">
-                <div style="color:#888; font-size:0.9rem;">INGRESOS TOTALES</div>
-                <div class="kpi-value">USD $24,500</div>
-                <div class="kpi-sub"><i class="fa-solid fa-arrow-trend-up"></i> +12.5% vs last month</div>
-            </div>
-            <div class="card">
-                <div style="color:#888; font-size:0.9rem;">TRABAJOS ACTIVOS</div>
-                <div class="kpi-value">12</div>
-                <div class="kpi-sub">programados para hoy</div>
-            </div>
-            <div class="card">
-                <div style="color:#888; font-size:0.9rem;">TICKET PROMEDIO</div>
-                <div class="kpi-value">USD 450</div>
-                <div class="kpi-sub" style="color:#4caf50;">+4.2%</div>
-            </div>
-        </div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header fade-in">
+                <div>
+                    <h2 class="brand-font">
+                        <span data-i18n="greeting">Buenas</span>,
+                        <span class="text-gold">Admin</span>
+                    </h2>
+                    <p class="text-muted" style="font-size: 0.85rem; margin-top: 4px;" id="currentDate"></p>
+                </div>
+                <div class="actions">
+                    <button class="lang-toggle-small" id="dashLangToggle" title="Toggle Language">
+                        <i class="fa-solid fa-globe"></i>
+                    </button>
+                    <i class="fa-regular fa-bell" title="Notifications"></i>
+                    <div class="profile-pic" title="Profile"></div>
+                </div>
+            </header>
 
-        <div class="card">
-            <div class="table-header">
-                <h3>Reservas Recientes</h3>
-                <button class="gold-btn-small">+ Nueva Reserva</button>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>CLIENTE</th>
-                        <th>VEHÍCULO</th>
-                        <th>SERVICIO</th>
-                        <th>FECHA</th>
-                        <th>ESTADO</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr onclick="openModal('bookingModal')">
-                        <td><strong>Roberto Rodriguez</strong></td>
-                        <td>Porsche 911 GT3</td>
-                        <td>Recubrimiento Cerámico</td>
-                        <td>2023-10-24</td>
-                        <td class="status-confirmed">Confirmado</td>
-                    </tr>
-                    <tr onclick="openModal('bookingModal')">
-                        <td><strong>Sarah Miller</strong></td>
-                        <td>Range Rover Sport</td>
-                        <td>Detallado Completo</td>
-                        <td>2023-10-24</td>
-                        <td class="status-pending">Pendiente</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </main>
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                <div class="card fade-in-up">
+                    <div class="card-icon">
+                        <i class="fa-solid fa-dollar-sign"></i>
+                    </div>
+                    <div class="kpi-label" data-i18n="kpiRevenue">Ingresos Totales</div>
+                    <div class="kpi-value gold">$24,500</div>
+                    <div class="kpi-sub">
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+                        <span>+12.5% <span data-i18n="vsLastMonth">vs mes anterior</span></span>
+                    </div>
+                </div>
 
+                <div class="card fade-in-up">
+                    <div class="card-icon">
+                        <i class="fa-solid fa-car"></i>
+                    </div>
+                    <div class="kpi-label" data-i18n="kpiActiveJobs">Trabajos Activos</div>
+                    <div class="kpi-value">12</div>
+                    <div class="kpi-sub neutral">
+                        <i class="fa-regular fa-clock"></i>
+                        <span data-i18n="scheduledToday">programados para hoy</span>
+                    </div>
+                </div>
+
+                <div class="card fade-in-up">
+                    <div class="card-icon">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+                    <div class="kpi-label" data-i18n="kpiAvgTicket">Ticket Promedio</div>
+                    <div class="kpi-value">$450</div>
+                    <div class="kpi-sub">
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+                        <span>+4.2%</span>
+                    </div>
+                </div>
+
+                <div class="card fade-in-up">
+                    <div class="card-icon">
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <div class="kpi-label" data-i18n="kpiRating">Calificación</div>
+                    <div class="kpi-value">4.9</div>
+                    <div class="kpi-sub neutral">
+                        <i class="fa-solid fa-star" style="color: var(--gold);"></i>
+                        <span data-i18n="basedOnReviews">basado en 127 reseñas</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Bookings Table -->
+            <div class="card fade-in-up" style="animation-delay: 0.25s;">
+                <div class="table-header">
+                    <h3 class="brand-font" data-i18n="recentBookings">Reservas Recientes</h3>
+                    <button class="gold-btn-small">
+                        <i class="fa-solid fa-plus"></i>
+                        <span data-i18n="newBooking">Nueva Reserva</span>
+                    </button>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th data-i18n="thClient">Cliente</th>
+                            <th data-i18n="thVehicle">Vehículo</th>
+                            <th data-i18n="thService">Servicio</th>
+                            <th data-i18n="thDate">Fecha</th>
+                            <th data-i18n="thStatus">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr onclick="openModal('bookingModal')">
+                            <td><strong>Roberto Rodriguez</strong></td>
+                            <td>Porsche 911 GT3</td>
+                            <td data-i18n="serviceCeramic">Recubrimiento Cerámico</td>
+                            <td>2026-01-24</td>
+                            <td><span class="status-confirmed" data-i18n="statusConfirmed">Confirmado</span></td>
+                        </tr>
+                        <tr onclick="openModal('bookingModal')">
+                            <td><strong>Sarah Miller</strong></td>
+                            <td>Range Rover Sport</td>
+                            <td data-i18n="serviceFullDetail">Detallado Completo</td>
+                            <td>2026-01-24</td>
+                            <td><span class="status-pending" data-i18n="statusPending">Pendiente</span></td>
+                        </tr>
+                        <tr onclick="openModal('bookingModal')">
+                            <td><strong>Carlos Mendez</strong></td>
+                            <td>BMW M4 Competition</td>
+                            <td data-i18n="serviceInterior">Detallado Interior</td>
+                            <td>2026-01-25</td>
+                            <td><span class="status-confirmed" data-i18n="statusConfirmed">Confirmado</span></td>
+                        </tr>
+                        <tr onclick="openModal('bookingModal')">
+                            <td><strong>Emily Chen</strong></td>
+                            <td>Mercedes-AMG GT</td>
+                            <td data-i18n="servicePaintCorrection">Corrección de Pintura</td>
+                            <td>2026-01-26</td>
+                            <td><span class="status-pending" data-i18n="statusPending">Pendiente</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Booking Detail Modal -->
     <div id="bookingModal" class="modal-overlay">
         <div class="modal-content">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div class="modal-header">
                 <div>
-                    <h3 style="margin-bottom:0.5rem; color:#888;">BOOKING #101</h3>
-                    <h2 class="brand-font" style="margin-bottom:1.5rem;">Roberto Rodriguez</h2>
+                    <h3>BOOKING #101</h3>
+                    <h2 class="brand-font">Roberto Rodriguez</h2>
                 </div>
-                <button onclick="closeModal('bookingModal')" style="background:none; border:none; color:#666; cursor:pointer; font-size:1.2rem;">&times;</button>
+                <button class="modal-close" onclick="closeModal('bookingModal')">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
-            
-            <label style="color:#888; font-size:0.8rem; display:block; margin-bottom:0.5rem;">NOTES</label>
-            <input type="text" value="Ceramic refresh" style="width:100%; padding:12px; background:#222; border:1px solid #444; color:white; margin-bottom:1.5rem; border-radius:6px;">
-            
-            <div style="display:flex; gap:1rem;">
-                <button class="btn-primary" onclick="closeModal('bookingModal')">Save Changes</button>
-                <button style="background:transparent; border:1px solid #444; color:#888; padding:1rem; border-radius:6px; cursor:pointer;" onclick="closeModal('bookingModal')">Cancel</button>
+
+            <div class="modal-body">
+                <label class="modal-label" data-i18n="modalVehicle">Vehículo</label>
+                <input type="text" class="modal-input" value="Porsche 911 GT3" readonly>
+
+                <label class="modal-label" data-i18n="modalService">Servicio</label>
+                <input type="text" class="modal-input" value="Recubrimiento Cerámico" readonly>
+
+                <label class="modal-label" data-i18n="modalNotes">Notas</label>
+                <input type="text" class="modal-input" value="Ceramic refresh - customer requests extra attention to wheel wells" placeholder="Add notes...">
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="closeModal('bookingModal')">
+                    <i class="fa-solid fa-check"></i>
+                    <span data-i18n="saveChanges">Guardar Cambios</span>
+                </button>
+                <button class="btn-secondary" onclick="closeModal('bookingModal')">
+                    <span data-i18n="cancel">Cancelar</span>
+                </button>
             </div>
         </div>
     </div>
 
-    <script src="js/admin-app.js"></script>
+    <style>
+        /* Additional dashboard-specific styles */
+        .lang-toggle-small {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text-muted);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .lang-toggle-small:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .modal-body {
+            margin-bottom: 24px;
+        }
+
+        /* Ensure sidebar nav item text doesn't wrap */
+        .nav-item span {
+            white-space: nowrap;
+        }
+    </style>
+
+    <script>
+        // ===========================================
+        // Translations
+        // ===========================================
+        const translations = {
+            es: {
+                greeting: 'Buenas',
+                navDashboard: 'Panel Principal',
+                navBookings: 'Reservas',
+                navClients: 'Clientes',
+                navAnalytics: 'Analítica',
+                navSettings: 'Configuración',
+                navLogout: 'Cerrar Sesión',
+                kpiRevenue: 'Ingresos Totales',
+                kpiActiveJobs: 'Trabajos Activos',
+                kpiAvgTicket: 'Ticket Promedio',
+                kpiRating: 'Calificación',
+                vsLastMonth: 'vs mes anterior',
+                scheduledToday: 'programados para hoy',
+                basedOnReviews: 'basado en 127 reseñas',
+                recentBookings: 'Reservas Recientes',
+                newBooking: 'Nueva Reserva',
+                thClient: 'Cliente',
+                thVehicle: 'Vehículo',
+                thService: 'Servicio',
+                thDate: 'Fecha',
+                thStatus: 'Estado',
+                statusConfirmed: 'Confirmado',
+                statusPending: 'Pendiente',
+                serviceCeramic: 'Recubrimiento Cerámico',
+                serviceFullDetail: 'Detallado Completo',
+                serviceInterior: 'Detallado Interior',
+                servicePaintCorrection: 'Corrección de Pintura',
+                modalVehicle: 'Vehículo',
+                modalService: 'Servicio',
+                modalNotes: 'Notas',
+                saveChanges: 'Guardar Cambios',
+                cancel: 'Cancelar'
+            },
+            en: {
+                greeting: 'Welcome',
+                navDashboard: 'Dashboard',
+                navBookings: 'Bookings',
+                navClients: 'Clients',
+                navAnalytics: 'Analytics',
+                navSettings: 'Settings',
+                navLogout: 'Sign Out',
+                kpiRevenue: 'Total Revenue',
+                kpiActiveJobs: 'Active Jobs',
+                kpiAvgTicket: 'Average Ticket',
+                kpiRating: 'Rating',
+                vsLastMonth: 'vs last month',
+                scheduledToday: 'scheduled for today',
+                basedOnReviews: 'based on 127 reviews',
+                recentBookings: 'Recent Bookings',
+                newBooking: 'New Booking',
+                thClient: 'Client',
+                thVehicle: 'Vehicle',
+                thService: 'Service',
+                thDate: 'Date',
+                thStatus: 'Status',
+                statusConfirmed: 'Confirmed',
+                statusPending: 'Pending',
+                serviceCeramic: 'Ceramic Coating',
+                serviceFullDetail: 'Full Detail',
+                serviceInterior: 'Interior Detail',
+                servicePaintCorrection: 'Paint Correction',
+                modalVehicle: 'Vehicle',
+                modalService: 'Service',
+                modalNotes: 'Notes',
+                saveChanges: 'Save Changes',
+                cancel: 'Cancel'
+            }
+        };
+
+        let currentLang = localStorage.getItem('adminLang') || 'es';
+
+        function applyTranslations(lang) {
+            const t = translations[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) {
+                    el.textContent = t[key];
+                }
+            });
+            document.documentElement.lang = lang;
+        }
+
+        // Apply saved language
+        applyTranslations(currentLang);
+
+        // Language toggle
+        document.getElementById('dashLangToggle').addEventListener('click', () => {
+            currentLang = currentLang === 'es' ? 'en' : 'es';
+            localStorage.setItem('adminLang', currentLang);
+            applyTranslations(currentLang);
+        });
+
+        // ===========================================
+        // Date Display
+        // ===========================================
+        function updateDate() {
+            const now = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+            const locale = currentLang === 'es' ? 'es-ES' : 'en-US';
+            document.getElementById('currentDate').textContent = now.toLocaleDateString(locale, options);
+        }
+        updateDate();
+
+        // ===========================================
+        // Navigation
+        // ===========================================
+        function switchView(viewName) {
+            // Update active state
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            console.log('Switched to view:', viewName);
+            // In a full implementation, you would show/hide different content sections here
+        }
+
+        // ===========================================
+        // Modal Functions
+        // ===========================================
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.style.display = 'flex';
+                // Trigger animation
+                const content = modal.querySelector('.modal-content');
+                content.style.opacity = '0';
+                content.style.transform = 'translateY(20px) scale(0.98)';
+                setTimeout(() => {
+                    content.style.transition = 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+                    content.style.opacity = '1';
+                    content.style.transform = 'translateY(0) scale(1)';
+                }, 10);
+            }
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) {
+                const content = modal.querySelector('.modal-content');
+                content.style.opacity = '0';
+                content.style.transform = 'translateY(20px) scale(0.98)';
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 250);
+            }
+        }
+
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    closeModal(overlay.id);
+                }
+            });
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay').forEach(modal => {
+                    if (modal.style.display === 'flex') {
+                        closeModal(modal.id);
+                    }
+                });
+            }
+        });
+
+        // ===========================================
+        // Logout Handler
+        // ===========================================
+        function handleLogout() {
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
+        }
+    </script>
 </body>
 </html>

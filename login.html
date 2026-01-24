@@ -3,44 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>Gold Rush | Admin Portal</title>
-    <link rel="stylesheet" href="css/admin-theme.css">
+
+    <!-- Fonts (matching public site) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Admin Theme -->
+    <link rel="stylesheet" href="css/admin-theme.css">
 </head>
 <body class="login-body">
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+
+    <!-- Login Card -->
     <div class="login-wrapper">
-        <div class="login-card">
+        <div class="login-card fade-in-up">
+            <!-- Brand Header -->
             <div class="login-brand">
-                <h1>Gold Rush</h1>
-                <p>Admin Portal</p>
+                <h1 class="brand-font">Gold Rush</h1>
+                <p id="brandSubtitle">Portal de Administración</p>
             </div>
 
+            <!-- Login Form -->
             <form id="loginForm">
                 <div class="input-group">
-                    <label>Usuario</label>
+                    <label id="labelUser">Usuario</label>
                     <div class="input-wrapper">
                         <i class="fa-regular fa-user"></i>
-                        <input type="text" placeholder="admin_user" required>
+                        <input
+                            type="text"
+                            id="username"
+                            placeholder="admin_user"
+                            autocomplete="username"
+                            required
+                        >
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label>Contraseña</label>
+                    <label id="labelPassword">Contraseña</label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-lock"></i>
-                        <input type="password" placeholder="••••••••" required>
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="••••••••"
+                            autocomplete="current-password"
+                            required
+                        >
                     </div>
                 </div>
 
-                <button type="submit" class="btn-primary">
-                    Entrar al Sistema <i class="fa-solid fa-arrow-right"></i>
+                <button type="submit" class="btn-primary" id="loginBtn">
+                    <span id="loginText">Entrar al Sistema</span>
+                    <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </form>
 
-            <button id="langToggle" class="lang-switch">Switch to English</button>
+            <!-- Language Toggle -->
+            <button id="langToggle" class="lang-switch">
+                <i class="fa-solid fa-globe"></i>
+                <span>Switch to English</span>
+            </button>
         </div>
     </div>
-    <script src="js/admin-app.js"></script>
+
+    <script>
+        // ===========================================
+        // Language Toggle Functionality
+        // ===========================================
+        const translations = {
+            es: {
+                brandSubtitle: 'Portal de Administración',
+                labelUser: 'Usuario',
+                labelPassword: 'Contraseña',
+                loginText: 'Entrar al Sistema',
+                loadingText: 'Verificando...',
+                langSwitch: 'Switch to English'
+            },
+            en: {
+                brandSubtitle: 'Admin Portal',
+                labelUser: 'Username',
+                labelPassword: 'Password',
+                loginText: 'Sign In',
+                loadingText: 'Verifying...',
+                langSwitch: 'Cambiar a Español'
+            }
+        };
+
+        let currentLang = localStorage.getItem('adminLang') || 'es';
+
+        function applyTranslations(lang) {
+            const t = translations[lang];
+            document.getElementById('brandSubtitle').textContent = t.brandSubtitle;
+            document.getElementById('labelUser').textContent = t.labelUser;
+            document.getElementById('labelPassword').textContent = t.labelPassword;
+            document.getElementById('loginText').textContent = t.loginText;
+            document.querySelector('#langToggle span').textContent = t.langSwitch;
+            document.documentElement.lang = lang;
+        }
+
+        // Apply saved language on load
+        applyTranslations(currentLang);
+
+        // Toggle language
+        document.getElementById('langToggle').addEventListener('click', () => {
+            currentLang = currentLang === 'es' ? 'en' : 'es';
+            localStorage.setItem('adminLang', currentLang);
+            applyTranslations(currentLang);
+        });
+
+        // ===========================================
+        // Login Form Handler
+        // ===========================================
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById('loginBtn');
+            const t = translations[currentLang];
+            const originalContent = btn.innerHTML;
+
+            // Loading state
+            btn.innerHTML = `
+                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                <span>${t.loadingText}</span>
+            `;
+            btn.style.pointerEvents = 'none';
+            btn.style.opacity = '0.85';
+
+            // Simulate verification (replace with real auth)
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1000);
+        });
+
+        // ===========================================
+        // Input Focus Effects
+        // ===========================================
+        document.querySelectorAll('.input-wrapper input').forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.classList.add('focused');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.classList.remove('focused');
+            });
+        });
+    </script>
 </body>
 </html>
